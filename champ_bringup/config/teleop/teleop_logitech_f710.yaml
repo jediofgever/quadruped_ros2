@@ -1,0 +1,99 @@
+teleop_node:
+  ros__parameters:
+    # HW mode switch set to "X" on logitech controller
+    # MODE LED SHOULD BE OFF
+
+    turn_calc_w: 0.75
+    turn_calc_l: 0.75
+
+    #The teleop node must find axis_linear and axis_angular
+    #Other axis are optional
+
+    axis_map: [
+                "axis_vx: 1", # L STICK X
+                "axis_vy: 0", # L STICK X
+                "axis_wz: 3", # R STICK Y
+                "axis_turn_left: 2", # LT
+                "axis_turn_right: 5", # RT
+                "axis_drive_mode_right: 6",
+                "axis_drive_mode_forward: 7"
+    ]
+
+    # The teleop node will work without buttons.
+    #
+    button_map: [
+                  # incease and decrease gain
+                  "button_less_gain: 4", # LB
+                  "button_more_gain: 5", # RB
+                  
+                  # function button
+                  "button_function: 7", # START
+
+                  # the teleop lock will publish true on the teleop lock topic
+                  # [button_function + button_teleop_lock] to unlock
+                  "button_teleop_lock: 6", # BACK
+
+                  # Switch drive mode
+    #             button_left: 11, # LEFT
+    #             button_forward: 13, # UP
+
+                  # Other buttons
+                  "button_0: 0", # A
+                  "button_1: 1", # B
+                  "button_2: 2", # X
+                  "button_3: 3", # Y
+                  "button_4: 8", # XBOX
+                  "button_5: 9", # L STICK
+                  "button_6: 10", # R STICK
+    #              button_7: 12, # RIGHT
+    #              button_8: 14 # DOWN
+    #
+
+    #              Logitech f710 buttonified axes start at index 11
+                  "button_7: 11",
+                  button_8: 17",
+                  button_9: 18"
+    ]
+    
+    # Button that must be pressed when turning in place
+    button_turning_safety: button_3
+
+
+    # Button combination for homing
+    # Buttons must be pressed at the same time
+    home_buttons: [button_0, button_3]
+
+    # Button combination for cahnging to omni mode
+    # Buttons must be pressed at the same time
+    omni_buttons: [button_1, button_2]
+
+    kv_default_buttons: [button_less_gain, button_more_gain]
+
+    mode_left_buttons: [button_function, button_8]
+    mode_forward_buttons: [button_function, button_9]
+
+    # The teleop node can call an arb. number of user-specified (std_srv::Trigger) services
+    # button_function + <user_spec_button>
+    # This will only work if button_function is defined
+    # empety service names are ignored
+    trigger_map: ["button_0:release_esd_lock",
+                  "button_1:void",
+                  "button_2:relative/path/to/service",
+                  "button_3:/absolute/path/to/service",
+                  "button_4:void",
+                  "button_5:void",
+                  "button_6:void"
+    ]
+
+    gains:        [
+                  "kv_default: 0.75", 
+                  "kv_min: 0.1",
+                  "kv_max: 1.5",
+                  "kv_increment: 0.1"
+    ]
+
+    # other
+    # axis_1: 0, # L STICK Y
+    # axis_2: 4, # R STICK X
+    # axis_3: 6, # LEFT-RIGHT
+    # axis_4: 7 # UP-DOWN
