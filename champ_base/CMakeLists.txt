@@ -54,7 +54,6 @@ install(TARGETS
     quadruped_controller
     message_relay
     #state_estimation
-    #state_estimation_node 
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin

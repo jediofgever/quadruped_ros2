@@ -28,82 +28,93 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef STATE_ESTIMATION_H
 #define STATE_ESTIMATION_H
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 
-#include <champ_msgs/ContactsStamped.h>
+#include <champ_msgs/msg/contacts_stamped.hpp>
 
 #include <champ/odometry/odometry.h>
-#include <champ/utils/urdf_loader.h>
+//#include <champ/utils/urdf_loader.h>
 
 #include <tf2/LinearMath/Quaternion.h>
-#include <nav_msgs/Odometry.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <nav_msgs/msg/odometry.hpp>
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 
-#include <geometry_msgs/TransformStamped.h>
-#include <sensor_msgs/JointState.h>
+#include <geometry_msgs/msg/transform_stamped.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
 
-#include <visualization_msgs/Marker.h>
-#include <visualization_msgs/MarkerArray.h>
+#include <visualization_msgs/msg/marker.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
-#include <sensor_msgs/Imu.h>
+#include <sensor_msgs/msg/imu.hpp>
+#include <champ_msgs/msg/imu.hpp>
+#include <champ/quadruped_base/quadruped_components.h>
+#include <champ/geometry/geometry.h>
+#include <champ/quadruped_base/quadruped_base.h>
 
-class StateEstimation
+
+class StateEstimation : public rclcpp::Node
 {
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::JointState, champ_msgs::ContactsStamped> SyncPolicy;
-    typedef message_filters::Synchronizer<SyncPolicy> Sync;
-    boost::shared_ptr<Sync> sync;
+  typedef message_filters::sync_policies::ApproximateTime<
+      sensor_msgs::msg::JointState, champ_msgs::msg::ContactsStamped> SyncPolicy;
+  typedef message_filters::Synchronizer<SyncPolicy> Sync;
+  std::shared_ptr<Sync> sync;
 
-    message_filters::Subscriber<sensor_msgs::JointState> joint_states_subscriber_;
-    message_filters::Subscriber<champ_msgs::ContactsStamped> foot_contacts_subscriber_;
-    ros::Subscriber imu_subscriber_;
+  message_filters::Subscriber<sensor_msgs::msg::JointState> joint_states_subscriber_;
+  message_filters::Subscriber<champ_msgs::msg::ContactsStamped> foot_contacts_subscriber_;
 
-    ros::Publisher footprint_to_odom_publisher_;
-    ros::Publisher base_to_footprint_publisher_;
-    ros::Publisher foot_publisher_;
+  rclcpp::Subscription<champ_msgs::msg::Imu>::SharedPtr imu_subscriber_;
 
-    tf2_ros::TransformBroadcaster base_broadcaster_;
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr footprint_to_odom_publisher_;
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr base_to_footprint_publisher_;
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr foot_publisher_;
 
-    ros::Timer odom_data_timer_;
-    ros::Timer base_pose_timer_;
+  tf2_ros::TransformBroadcaster base_broadcaster_;
 
-    champ::Velocities current_velocities_;
-    geometry::Transformation current_foot_positions_[4];
-    geometry::Transformation target_foot_positions_[4];
+  rclcpp::TimerBase::SharedPtr odom_data_timer_;
+  rclcpp::TimerBase::SharedPtr base_pose_timer_;
 
-    float x_pos_;
-    float y_pos_;
-    float heading_;
-    ros::Time last_vel_time_;
-    ros::Time last_sync_time_;
-    sensor_msgs::ImuConstPtr last_imu_;
+  champ::Velocities current_velocities_;
+  geometry::Transformation current_foot_positions_[4];
+  geometry::Transformation target_foot_positions_[4];
 
-    champ::GaitConfig gait_config_;
+  float x_pos_;
+  float y_pos_;
+  float heading_;
+  rclcpp::Time last_vel_time_;
+  rclcpp::Time last_sync_time_;
+  sensor_msgs::msg::Imu::ConstPtr last_imu_;
 
-    champ::QuadrupedBase base_;
-    champ::Odometry odometry_;
+  champ::GaitConfig gait_config_;
 
-    std::vector<std::string> joint_names_;
-    std::string base_name_;
-    std::string node_namespace_;
-    std::string odom_frame_;
-    std::string base_footprint_frame_;
-    std::string base_link_frame_;
-    bool orientation_from_imu_;
+  champ::QuadrupedBase base_;
+  champ::Odometry odometry_;
 
-    void publishFootprintToOdom_(const ros::TimerEvent& event);
-    void publishBaseToFootprint_(const ros::TimerEvent& event);
-    void synchronized_callback_(const sensor_msgs::JointStateConstPtr&, const champ_msgs::ContactsStampedConstPtr&);
-    void imu_callback_(const sensor_msgs::ImuConstPtr&);
+  std::vector<std::string> joint_names_;
+  std::string base_name_;
+  std::string node_namespace_;
+  std::string odom_frame_;
+  std::string base_footprint_frame_;
+  std::string base_link_frame_;
+  bool orientation_from_imu_;
 
-    visualization_msgs::Marker createMarker_(geometry::Transformation foot_pos, int id, std::string frame_id);
+  void publishFootprintToOdom();
+  void publishBaseToFootprint();
+  void synchronized_callback(
+    const sensor_msgs::msg::JointState::ConstSharedPtr & j,
+    const champ_msgs::msg::ContactsStamped::ConstSharedPtr & c);
+  void imu_callback(const sensor_msgs::msg::Imu::ConstSharedPtr imu);
 
-    public:
-        StateEstimation(ros::NodeHandle *nh, ros::NodeHandle *pnh);
+  visualization_msgs::msg::Marker createMarker(
+    geometry::Transformation foot_pos, int id,
+    std::string frame_id);
+
+public:
+  StateEstimation();
 };
 
 #endif
