@@ -25,57 +25,28 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MESSAGE_RELAY_H
-#define QUADRUPED_CONTROLLER_H
+#ifndef MACROS_H
+#define MACROS_H
 
-#include "ros/ros.h"
+#ifdef __unix__
+    #include <sys/time.h>
+    //source: https://gist.github.com/sevko/d23646ba07c77c15fde9
+    #define time_us() ({ \
+        struct timeval currentTime;\
+        gettimeofday(&currentTime, NULL);\
+        currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;\
+    })
+#else   
+    #include <Arduino.h>
 
-#include <champ_msgs/Joints.h>
-#include <champ_msgs/Imu.h>
-#include <champ_msgs/Contacts.h>
-#include <champ_msgs/ContactsStamped.h>
+    #define time_us() micros()
+#endif
 
-#include <champ/utils/urdf_loader.h>
+#define SECONDS_TO_MICROS 1000000
 
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2/LinearMath/Matrix3x3.h>
-#include <nav_msgs/Odometry.h>
-
-#include <sensor_msgs/JointState.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/MagneticField.h>
-#include <trajectory_msgs/JointTrajectory.h>
-#include <trajectory_msgs/JointTrajectoryPoint.h>
-#include <tf2_ros/transform_broadcaster.h>
-#include <geometry_msgs/Quaternion.h>
-
-class MessageRelay
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max)
 {
-    ros::Subscriber imu_raw_subscriber_;
-    ros::Subscriber joints_raw_subscriber_;
-    ros::Subscriber foot_contacts_subscriber_;
-
-    ros::Publisher imu_publisher_;
-    ros::Publisher mag_publisher_;
-    ros::Publisher joint_states_publisher_;   
-    ros::Publisher joint_commands_publisher_;   
-    ros::Publisher foot_contacts_publisher_;
-
-    std::vector<std::string> joint_names_;
-    std::string node_namespace_;
-    std::string imu_frame_;
-
-    bool in_gazebo_;
-    bool has_imu_;
-
-    sensor_msgs::Imu imu_data_;
-
-    void IMURawCallback_(const champ_msgs::Imu::ConstPtr& msg);
-    void jointStatesRawCallback_(const champ_msgs::Joints::ConstPtr& msg);
-    void footContactCallback_(const champ_msgs::Contacts::ConstPtr& msg);
-
-    public:
-        MessageRelay(ros::NodeHandle *nh, ros::NodeHandle *pnh);
-};
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 #endif

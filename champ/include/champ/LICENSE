@@ -1,4 +1,3 @@
-/*
 Copyright (c) 2019-2020, Juan Miguel Jimeno
 All rights reserved.
 
@@ -23,20 +22,3 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-#include "ros/ros.h"
-#include "state_estimation.h"
-
-int main(int argc, char** argv )
-{
-    ros::init(argc, argv, "state_estimation_node");
-
-    ros::NodeHandle nh("");
-    ros::NodeHandle nh_private("~");
-    
-    StateEstimation state_estimator(&nh, &nh_private);
-    
-    ros::spin();
-    return 0;
-}

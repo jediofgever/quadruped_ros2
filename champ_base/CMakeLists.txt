@@ -14,17 +14,23 @@ find_package(visualization_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
-find_package(tf2)
+find_package(champ_msgs REQUIRED)
+find_package(champ REQUIRED)
+find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(urdf REQUIRED)
 
+
 include_directories(
-  include 
+  include
+  ${champ_INCLUDE_DIRS}
+  ${champ_INCLUDE_DIRS}/champ/
+  ${champ_INCLUDE_DIRS}/champ/champ/ 
 )
 
-install(DIRECTORY config
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+install(DIRECTORY config  
+  DESTINATION share/${PROJECT_NAME}
 )
 
 set(dependencies
@@ -34,31 +40,21 @@ set(dependencies
   geometry_msgs
   nav_msgs
   sensor_msgs
-  trajectory_msgs)
+  trajectory_msgs
+  champ_msgs
+  champ)
 
-add_library(quadruped_controller src/quadruped_controller.cpp)
-add_library(message_relay src/message_relay.cpp)
-add_library(state_estimation src/state_estimation.cpp)
-
-add_executable(quadruped_controller_node src/quadruped_controller_node.cpp)
-ament_target_dependencies(quadruped_controller_node ${dependencies})
-ament_target_dependencies(quadruped_controller ${dependencies})
-
-add_executable(message_relay_node src/message_relay_node.cpp)
-ament_target_dependencies(message_relay_node ${dependencies})
+add_executable(message_relay src/message_relay.cpp)
 ament_target_dependencies(message_relay ${dependencies})
 
-add_executable(state_estimation_node src/state_estimation_node.cpp)
-ament_target_dependencies(state_estimation_node ${dependencies})
-ament_target_dependencies(state_estimation ${dependencies})
+add_executable(quadruped_controller src/quadruped_controller.cpp)
+ament_target_dependencies(quadruped_controller ${dependencies})
 
 install(TARGETS 
     quadruped_controller
-    quadruped_controller_node
     message_relay
-    message_relay_node
-    state_estimation
-    state_estimation_node
+    #state_estimation
+    #state_estimation_node 
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
