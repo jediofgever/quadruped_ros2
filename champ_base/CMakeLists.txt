@@ -21,7 +21,6 @@ find_package(tf2_ros REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(urdf REQUIRED)
 
-
 include_directories(
   include
   ${champ_INCLUDE_DIRS}
@@ -55,10 +54,20 @@ add_executable(state_estimation src/state_estimation.cpp)
 ament_target_dependencies(state_estimation ${dependencies})
 
 install(TARGETS 
-    quadruped_controller
-    message_relay
-    state_estimation
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-)
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+install(TARGETS quadruped_controller
+                message_relay
+                state_estimation
+  RUNTIME DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY include/
+  DESTINATION include/)
+
+install(
+  DIRECTORY 
+  DESTINATION share/${PROJECT_NAME})
+
+ament_package()

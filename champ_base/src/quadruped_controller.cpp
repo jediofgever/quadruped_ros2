@@ -32,6 +32,7 @@ champ::PhaseGenerator::Time rosTimeToChampTime(const rclcpp::Time & time)
   return time.nanoseconds() / 1000ul;
 }
 
+
 QuadrupedController::QuadrupedController()
 : Node("quadruped_controller_node"),
   body_controller_(base_),
@@ -42,22 +43,22 @@ QuadrupedController::QuadrupedController()
   std::string knee_orientation;
   double loop_rate = 200.0;
 
-  this->declare_parameter("gait/pantograph_leg", gait_config_.pantograph_leg);
-  this->declare_parameter("gait/max_linear_velocity_x", gait_config_.max_linear_velocity_x);
-  this->declare_parameter("gait/max_linear_velocity_y", gait_config_.max_linear_velocity_y);
-  this->declare_parameter("gait/max_angular_velocity_z", gait_config_.max_angular_velocity_z);
-  this->declare_parameter("gait/com_x_translation", gait_config_.com_x_translation);
-  this->declare_parameter("gait/swing_height", gait_config_.swing_height);
-  this->declare_parameter("gait/stance_depth", gait_config_.stance_depth);
-  this->declare_parameter("gait/stance_duration", gait_config_.stance_duration);
-  this->declare_parameter("gait/nominal_height", gait_config_.nominal_height);
-  this->declare_parameter("gait/knee_orientation", knee_orientation);
-  this->declare_parameter("publish_foot_contacts", publish_foot_contacts_);
-  this->declare_parameter("publish_joint_states", publish_joint_states_);
-  this->declare_parameter("publish_joint_control", publish_joint_control_);
-  this->declare_parameter("gazebo", in_gazebo_);
-  this->declare_parameter("joint_controller_topic", joint_control_topic);
-  this->declare_parameter("loop_rate", loop_rate);
+  this->declare_parameter("gait/pantograph_leg", false);
+  this->declare_parameter("gait/max_linear_velocity_x", 0.5);
+  this->declare_parameter("gait/max_linear_velocity_y", 0.25);
+  this->declare_parameter("gait/max_angular_velocity_z", 1.0);
+  this->declare_parameter("gait/com_x_translation", 0.0);
+  this->declare_parameter("gait/swing_height", 0.04);
+  this->declare_parameter("gait/stance_depth", 0.00);
+  this->declare_parameter("gait/stance_duration", 0.25);
+  this->declare_parameter("gait/nominal_height", 0.20);
+  this->declare_parameter("gait/knee_orientation", ">>");
+  this->declare_parameter("publish_foot_contacts", true);
+  this->declare_parameter("publish_joint_states", true);
+  this->declare_parameter("publish_joint_control", true);
+  this->declare_parameter("gazebo", true);
+  this->declare_parameter("joint_controller_topic", "joint_group_position_controller/command");
+  this->declare_parameter("loop_rate", 50.0);
 
   this->get_parameter("gait/pantograph_leg", gait_config_.pantograph_leg);
   this->get_parameter("gait/max_linear_velocity_x", gait_config_.max_linear_velocity_x);

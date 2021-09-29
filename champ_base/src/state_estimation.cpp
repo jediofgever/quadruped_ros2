@@ -32,6 +32,7 @@ champ::Odometry::Time rosTimeToChampTime(const rclcpp::Time & time)
   return time.nanoseconds() / 1000ul;
 }
 
+
 StateEstimation::StateEstimation()
 : Node("state_estimation_node"),
   odometry_(base_, rosTimeToChampTime(this->now()))
@@ -64,8 +65,8 @@ StateEstimation::StateEstimation()
   foot_publisher_ =
     this->create_publisher<visualization_msgs::msg::MarkerArray>("foot", custom_qos);
 
-  this->declare_parameter("links_map/base", "");
-  this->declare_parameter("gait/odom_scaler", 1.0);
+  this->declare_parameter("links_map/base", "base_link");
+  this->declare_parameter("gait/odom_scaler", 0.9);
   this->declare_parameter("orientation_from_imu", false);
 
   this->get_parameter("links_map/base", base_name_);
@@ -106,6 +107,8 @@ StateEstimation::StateEstimation()
     std::chrono::milliseconds(20),
     std::bind(&StateEstimation::publishBaseToFootprint, this));
 
+  last_vel_time_ = this->now();
+  last_sync_time_ = this->now();
 }
 
 void StateEstimation::synchronized_callback(

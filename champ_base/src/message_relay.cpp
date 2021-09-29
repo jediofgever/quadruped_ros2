@@ -66,7 +66,6 @@ MessageRelay::MessageRelay()
 
   //joint_names_ = champ::URDF::getJointNames(nh);
 
-
   if (has_imu_) {
     imu_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", custom_qos);
     mag_publisher_ = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", custom_qos);

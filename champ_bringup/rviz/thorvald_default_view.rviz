@@ -57,290 +57,107 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_inertia:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        base_sensor_link:
+          Value: true
+        lf_foot_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        bat0:
+        lf_hip_debug_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        lf_hip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        bat1:
+        lf_lower_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_bottom_screw_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_left_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_left_ir_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_right_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_right_ir_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        corner0:
+        lf_upper_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner0_1:
+        lh_foot_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        lh_hip_debug_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        lh_hip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner0_2:
+        lh_lower_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner0_3:
+        lh_upper_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner0_4:
+        rf_foot_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        rf_hip_debug_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        rf_hip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner1:
+        rf_lower_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner1_1:
+        rf_upper_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner1_2:
+        rh_foot_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        rh_hip_debug_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        rh_hip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner1_3:
+        rh_lower_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner1_4:
+        rh_upper_leg_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        corner2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner2_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner2_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner2_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner2_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner3_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner3_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner3_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        corner3_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        gps_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        leg0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        leg1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        leg2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        leg3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe0_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe0_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe1_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe1_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe2_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe2_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe3_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe3_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe4_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        pipe4_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        wheel0_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        wheel1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        wheel2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        wheel3_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        wide_angle_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
@@ -351,109 +168,49 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        base_inertia:
+          Value: true
         base_link:
           Value: true
-        base_sensor_link:
+        lf_foot_link:
           Value: true
-        bat0:
+        lf_hip_debug_link:
           Value: true
-        bat1:
+        lf_hip_link:
           Value: true
-        camera_bottom_screw_frame:
+        lf_lower_leg_link:
           Value: true
-        camera_color_frame:
+        lf_upper_leg_link:
           Value: true
-        camera_color_optical_frame:
+        lh_foot_link:
           Value: true
-        camera_depth_frame:
+        lh_hip_debug_link:
           Value: true
-        camera_depth_optical_frame:
+        lh_hip_link:
           Value: true
-        camera_left_ir_frame:
+        lh_lower_leg_link:
           Value: true
-        camera_left_ir_optical_frame:
+        lh_upper_leg_link:
           Value: true
-        camera_link:
+        rf_foot_link:
           Value: true
-        camera_right_ir_frame:
+        rf_hip_debug_link:
           Value: true
-        camera_right_ir_optical_frame:
+        rf_hip_link:
           Value: true
-        corner0:
+        rf_lower_leg_link:
           Value: true
-        corner0_1:
+        rf_upper_leg_link:
           Value: true
-        corner0_2:
+        rh_foot_link:
           Value: true
-        corner0_3:
+        rh_hip_debug_link:
           Value: true
-        corner0_4:
+        rh_hip_link:
           Value: true
-        corner1:
+        rh_lower_leg_link:
           Value: true
-        corner1_1:
-          Value: true
-        corner1_2:
-          Value: true
-        corner1_3:
-          Value: true
-        corner1_4:
-          Value: true
-        corner2:
-          Value: true
-        corner2_1:
-          Value: true
-        corner2_2:
-          Value: true
-        corner2_3:
-          Value: true
-        corner2_4:
-          Value: true
-        corner3:
-          Value: true
-        corner3_1:
-          Value: true
-        corner3_2:
-          Value: true
-        corner3_3:
-          Value: true
-        corner3_4:
-          Value: true
-        gps_link:
-          Value: true
-        imu_link:
-          Value: true
-        pipe0_1:
-          Value: true
-        pipe0_2:
-          Value: true
-        pipe1_1:
-          Value: true
-        pipe1_2:
-          Value: true
-        pipe2_1:
-          Value: true
-        pipe2_2:
-          Value: true
-        pipe3_1:
-          Value: true
-        pipe3_2:
-          Value: true
-        pipe4_1:
-          Value: true
-        pipe4_2:
-          Value: true
-        top0:
-          Value: true
-        top1:
-          Value: true
-        top2:
-          Value: true
-        top3:
-          Value: true
-        velodyne_link:
-          Value: true
-        wide_angle_camera_link:
+        rh_upper_leg_link:
           Value: true
       Marker Scale: 1
       Name: TF

@@ -98,17 +98,35 @@ def generate_launch_description():
             champ_bringup_share_dir, 'rviz', 'thorvald_default_view.rviz'),
         description='...')
 
-    # DECLARE THE BASE DRIVER ROS2 NODE
-    #declare_base_driver_node = Node(
-    #    package='champ_base',
-    #    executable='base_driver',
-    #    name='base_driver',
-    #    output='screen',
-    #    namespace='',
-    #    parameters=[robot_model_params],
-    #    #prefix=['xterm -e gdb -ex run --args'],
-    #    # uncomment this to run node in GDB debugger, note that you need xterm terminal installed with apt-get
-    #    remappings=[('cmd_vel', 'twist_mux/cmd_vel')])
+    # DECLARE THE msg relay ROS2 NODE
+    declare_message_relay_node = Node(
+        package='champ_base',
+        executable='message_relay',
+        name='message_relay',
+        output='screen',
+        namespace='',
+        # prefix=['xterm -e gdb -ex run --args'],
+    )
+
+    # DECLARE THE msg relay ROS2 NODE
+    declare_quadruped_controller_node = Node(
+        package='champ_base',
+        executable='quadruped_controller',
+        name='quadruped_controller',
+        output='screen',
+        namespace='',
+        # prefix=['xterm -e gdb -ex run --args'],
+    )
+
+    # DECLARE THE msg relay ROS2 NODE
+    declare_state_estimation_node = Node(
+        package='champ_base',
+        executable='state_estimation',
+        name='state_estimation',
+        output='screen',
+        namespace='',
+        # prefix=['xterm -e gdb -ex run --args'],
+    )
 
     # DECLARE THE ROBOT STATE PUBLISHER NODE
     xacro_file_name = 'champ.urdf.xacro'
@@ -123,6 +141,12 @@ def generate_launch_description():
                     {'robot_description': Command(['xacro ', xacro_full_dir])}],
         remappings=[('/tf', 'tf'),
                     ('/tf_static', 'tf_static')])
+
+    declare_joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        remappings=[('joint_states', 'joint_states')])
 
     # DECLARE TWIST MUX NODE
     declare_twist_mux_node = Node(
@@ -141,17 +165,6 @@ def generate_launch_description():
         name='joy_node',
         output='screen',
         parameters=[joy_config])
-
-    # DECLARE TELEOP NODE
-    #declare_teleop_node = Node(
-    #    package='thorvald_teleop',
-    #    executable='teleop_node',
-    #    name='teleop_node',
-    #    output='screen',
-    #    parameters=[teleop_config],
-    #    remappings=[('cmd_vel', "teleop_joy/cmd_vel"),
-    #                ('joy_priority', 'teleop_joy/joy_priority'),
-    #                ('home_steering', 'base_driver/home_steering')])
 
     # SPAWN THE ROBOT TO GAZEBO IF use_simulator, FROM THE TOPIC "robot_description"
     declare_spawn_entity_to_gazebo_node = Node(package='gazebo_ros',
@@ -189,19 +202,18 @@ def generate_launch_description():
         declare_use_simulator,
         declare_use_sim_time,
         declare_use_rviz,
-        declare_robot_name,
         declare_tf_prefix,
-        declare_robot_model_params,
-        declare_model_extras,
         decleare_twist_mux_config,
         declare_joy_config,
         declare_teleop_config,
         declare_rviz_config,
-        #declare_base_driver_node,
+        declare_quadruped_controller_node,
+        declare_state_estimation_node,
+        declare_message_relay_node,
         declare_robot_state_publisher_node,
+        declare_joint_state_publisher_node,
         declare_twist_mux_node,
         declare_joy_node,
-        #declare_teleop_node,
         declare_rviz_launch_include,
         declare_spawn_entity_to_gazebo_node,
         declare_start_gazebo_cmd,

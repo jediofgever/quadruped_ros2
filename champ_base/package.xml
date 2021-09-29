@@ -10,7 +10,7 @@
   <license>BSD</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>roslaunch</exec_depend>
+
   <depend>rclcpp</depend>
   <depend>visualization_msgs</depend>
   <depend>geometry_msgs</depend>
@@ -22,4 +22,9 @@
   <depend>tf2_ros</depend>
   <depend>urdf</depend>
   <depend>message_filters</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
 </package>
