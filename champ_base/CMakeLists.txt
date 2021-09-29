@@ -41,6 +41,7 @@ set(dependencies
   nav_msgs
   sensor_msgs
   trajectory_msgs
+  visualization_msgs
   champ_msgs
   champ)
 
