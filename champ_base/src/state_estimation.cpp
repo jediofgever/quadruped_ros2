@@ -439,18 +439,6 @@ void StateEstimation::publishBaseToFootprint()
   pose_msg.pose.pose.orientation.z = 0;
   pose_msg.pose.pose.orientation.w = 1.0;
 
-  // WARN THIS NEEDS TO BE TESTED
-  // create a tf as well from acquired footprint to odom
-  geometry_msgs::msg::TransformStamped tf_base_to_base_footprint;
-  tf_base_to_base_footprint.header.frame_id = base_footprint_frame_;
-  tf_base_to_base_footprint.child_frame_id = base_link_frame_;
-  tf_base_to_base_footprint.header.stamp = this->now();
-  tf_base_to_base_footprint.transform.translation.x = pose_msg.pose.pose.position.x;
-  tf_base_to_base_footprint.transform.translation.y = pose_msg.pose.pose.position.y;
-  tf_base_to_base_footprint.transform.translation.z = pose_msg.pose.pose.position.z;
-  tf_base_to_base_footprint.transform.rotation = pose_msg.pose.pose.orientation;
-  tf_broadcaster_.sendTransform(tf_base_to_base_footprint);
-
   base_to_footprint_publisher_->publish(pose_msg);
 }
 
