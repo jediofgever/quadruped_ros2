@@ -40,14 +40,9 @@ def generate_launch_description():
     use_simulator = LaunchConfiguration('use_simulator')
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration("use_rviz")
-    robot_name = LaunchConfiguration('robot_name')
     tf_prefix = LaunchConfiguration('tf_prefix')
-    robot_model_params = LaunchConfiguration('robot_model_params')
-    model_extras = LaunchConfiguration('model_extras')
-    twist_mux_config = LaunchConfiguration('twist_mux_config')
-    teleop_config = LaunchConfiguration('teleop_config')
-    joy_config = LaunchConfiguration('joy_config')
     rviz_config = LaunchConfiguration("rviz_config")
+    joy_config_filepath = LaunchConfiguration('config_filepath')
 
     declare_use_simulator = DeclareLaunchArgument(
         'use_simulator',
@@ -61,42 +56,20 @@ def generate_launch_description():
         'use_rviz',
         default_value='True',
         description='...')
-    declare_robot_name = DeclareLaunchArgument(
-        'robot_name',
-        default_value=' ',
-        description='...')
     declare_tf_prefix = DeclareLaunchArgument(
         'tf_prefix',
         default_value='',
-        description='...')
-    declare_robot_model_params = DeclareLaunchArgument(
-        'robot_model_params',
-        default_value='',
-        description='...')
-    declare_model_extras = DeclareLaunchArgument(
-        'model_extras',
-        default_value='',
-        description='...')
-    decleare_twist_mux_config = DeclareLaunchArgument(
-        'twist_mux_config',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'twist_mux_config.yaml'),
-        description='path to locks params.')
-    declare_joy_config = DeclareLaunchArgument(
-        'joy_config',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'joy_config.yaml'),
-        description='...')
-    declare_teleop_config = DeclareLaunchArgument(
-        'teleop_config',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'teleop', 'teleop_xbox.yaml'),
         description='...')
     declare_rviz_config = DeclareLaunchArgument(
         'rviz_config',
         default_value=os.path.join(
             champ_bringup_share_dir, 'rviz', 'thorvald_default_view.rviz'),
         description='...')
+    declare_joy_config_filepath = DeclareLaunchArgument(
+        'config_filepath',
+        default_value=os.path.join(
+            champ_bringup_share_dir, 'config', 'joystick_xbox.yaml'),
+        description='path to locks params.')
 
     # DECLARE THE msg relay ROS2 NODE
     declare_message_relay_node = Node(
@@ -148,23 +121,17 @@ def generate_launch_description():
         name='joint_state_publisher',
         remappings=[('joint_states', 'joint_states')])
 
-    # DECLARE TWIST MUX NODE
-    declare_twist_mux_node = Node(
-        package='twist_mux',
-        executable='twist_mux',
-        name='twist_mux',
-        namespace='',
-        output='screen',
-        parameters=[twist_mux_config],
-        remappings=[('cmd_vel_out', 'twist_mux/cmd_vel')])
-
-    # DECLARE JOY NODE
-    declare_joy_node = Node(
-        package='joy',
-        executable='joy_node',
-        name='joy_node',
-        output='screen',
-        parameters=[joy_config])
+    # CALL JOYSTICK TELEOP
+    joy_config_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [os.path.join(get_package_share_directory('teleop_twist_joy'), 'launch', 'teleop-launch.py')]),
+        launch_arguments={
+            'config_filepath': joy_config_filepath}.items()
+    )
+    # TWIST MUX FOR MIXING MULTIPLE CMD VEL COMMANDS
+    twist_mux_cmd = IncludeLaunchDescription(PythonLaunchDescriptionSource(
+        os.path.join(get_package_share_directory('twist_mux'), 'launch', 'twist_mux_launch.py')),
+    )
 
     # SPAWN THE ROBOT TO GAZEBO IF use_simulator, FROM THE TOPIC "robot_description"
     declare_spawn_entity_to_gazebo_node = Node(package='gazebo_ros',
@@ -198,23 +165,44 @@ def generate_launch_description():
         'rviz_config': rviz_config
     }.items())
 
+    localization_params = LaunchConfiguration('localization_params')
+    decleare_localization_params = DeclareLaunchArgument(
+        'localization_params',
+        default_value=os.path.join(champ_bringup_share_dir, 'config', 'robot_localization_params.yaml'),
+        description='Path to the vox_nav parameters file.')
+
+    base_to_footprint_ekf = Node(package='robot_localization',
+                                 executable='ekf_node',
+                                 name='base_to_footprint_ekf',
+                                 output='screen',
+                                 parameters=[localization_params],
+                                 remappings=[('odometry/filtered', 'odometry/local')])
+
+    footprint_to_odom_ekf = Node(package='robot_localization',
+                                 executable='ekf_node',
+                                 name='footprint_to_odom_ekf',
+                                 output='screen',
+                                 parameters=[localization_params],
+                                 remappings=[('odometry/filtered', 'odom')])
+
     return LaunchDescription([
         declare_use_simulator,
         declare_use_sim_time,
         declare_use_rviz,
         declare_tf_prefix,
-        decleare_twist_mux_config,
-        declare_joy_config,
-        declare_teleop_config,
         declare_rviz_config,
         declare_quadruped_controller_node,
         declare_state_estimation_node,
         declare_message_relay_node,
         declare_robot_state_publisher_node,
         declare_joint_state_publisher_node,
-        declare_twist_mux_node,
-        declare_joy_node,
         declare_rviz_launch_include,
         declare_spawn_entity_to_gazebo_node,
         declare_start_gazebo_cmd,
+        declare_joy_config_filepath,
+        twist_mux_cmd,
+        joy_config_cmd,
+        decleare_localization_params,
+        base_to_footprint_ekf,
+        footprint_to_odom_ekf
     ])

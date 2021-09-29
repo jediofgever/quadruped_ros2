@@ -65,11 +65,23 @@ MessageRelay::MessageRelay()
   get_parameter("has_imu", has_imu_);
 
   //joint_names_ = champ::URDF::getJointNames(nh);
+  joint_names_ = {
+    "lf_hip_joint",
+    "lf_upper_leg_joint",
+    "lf_lower_leg_joint",
+    "lh_hip_joint",
+    "lh_upper_leg_joint",
+    "lh_lower_leg_joint"
+    "rf_hip_joint",
+    "rf_upper_leg_joint",
+    "rf_lower_leg_joint",
+    "rh_hip_joint",
+    "rh_upper_leg_joint",
+    "rh_lower_leg_joint"};
 
   if (has_imu_) {
     imu_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", custom_qos);
     mag_publisher_ = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", custom_qos);
-
   }
 
   imu_frame_ = node_namespace_ + "imu_link";

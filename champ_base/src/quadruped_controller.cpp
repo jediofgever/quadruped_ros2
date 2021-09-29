@@ -58,7 +58,7 @@ QuadrupedController::QuadrupedController()
   this->declare_parameter("publish_joint_control", true);
   this->declare_parameter("gazebo", true);
   this->declare_parameter("joint_controller_topic", "joint_group_position_controller/command");
-  this->declare_parameter("loop_rate", 50.0);
+  this->declare_parameter("loop_rate", 100.0);
 
   this->get_parameter("gait/pantograph_leg", gait_config_.pantograph_leg);
   this->get_parameter("gait/max_linear_velocity_x", gait_config_.max_linear_velocity_x);
@@ -78,7 +78,7 @@ QuadrupedController::QuadrupedController()
   this->get_parameter("loop_rate", loop_rate);
 
   cmd_vel_subscriber_ = this->create_subscription<geometry_msgs::msg::Twist>(
-    "cmd_vel/smooth",
+    "cmd_vel",
     rclcpp::SystemDefaultsQoS(),
     std::bind(&QuadrupedController::cmdVelCallback, this, std::placeholders::_1));
 
@@ -107,6 +107,19 @@ QuadrupedController::QuadrupedController()
 
   //champ::URDF::loadFromServer(base_, nh);
   //joint_names_ = champ::URDF::getJointNames(nh);
+  joint_names_ = {
+    "lf_hip_joint",
+    "lf_upper_leg_joint",
+    "lf_lower_leg_joint",
+    "lh_hip_joint",
+    "lh_upper_leg_joint",
+    "lh_lower_leg_joint"
+    "rf_hip_joint",
+    "rf_upper_leg_joint",
+    "rf_lower_leg_joint",
+    "rh_hip_joint",
+    "rh_upper_leg_joint",
+    "rh_lower_leg_joint"};
 
   timer_ = this->create_wall_timer(
     std::chrono::milliseconds(static_cast<int>(1000 / loop_rate)),

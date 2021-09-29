@@ -51,13 +51,11 @@
                 <namespace></namespace>
                 <remapping>odom:=odom/ground_truth</remapping>
             </ros>
-            <update_rate>0</update_rate>
-            <xyz_offset>10 10 10</xyz_offset>
             <body_name>base_link</body_name>
-            <frame_name>world</frame_name>
-             <rpy_offset>0 0 0</rpy_offset>
-            <gaussian_noise>0</gaussian_noise>
-            <always_on>1</always_on>
+            <update_rate>1</update_rate>
+            <xyz_offset>10 10 10</xyz_offset>
+            <rpy_offset>0.1 0.1 0.1</rpy_offset>
+            <gaussian_noise>0.01</gaussian_noise>
         </plugin>
     </gazebo>
 
