@@ -66,4 +66,5 @@
             <parameters>$(find champ_bringup)/config/ros2_control.yaml</parameters>
         </plugin>
     </gazebo>
+
 </robot>
