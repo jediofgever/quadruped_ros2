@@ -50,10 +50,13 @@ ament_target_dependencies(message_relay ${dependencies})
 add_executable(quadruped_controller src/quadruped_controller.cpp)
 ament_target_dependencies(quadruped_controller ${dependencies})
 
+add_executable(state_estimation src/state_estimation.cpp)
+ament_target_dependencies(state_estimation ${dependencies})
+
 install(TARGETS 
     quadruped_controller
     message_relay
-    #state_estimation
+    state_estimation
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin

@@ -29,9 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define STATE_ESTIMATION_H
 
 #include "rclcpp/rclcpp.hpp"
-
 #include <champ_msgs/msg/contacts_stamped.hpp>
-
 #include <champ/odometry/odometry.h>
 //#include <champ/utils/urdf_loader.h>
 
@@ -45,6 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf2_ros/buffer.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 
 #include <message_filters/subscriber.h>
@@ -67,13 +67,12 @@ class StateEstimation : public rclcpp::Node
   message_filters::Subscriber<sensor_msgs::msg::JointState> joint_states_subscriber_;
   message_filters::Subscriber<champ_msgs::msg::ContactsStamped> foot_contacts_subscriber_;
 
-  rclcpp::Subscription<champ_msgs::msg::Imu>::SharedPtr imu_subscriber_;
+  rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscriber_;
 
-  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr footprint_to_odom_publisher_;
-  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr base_to_footprint_publisher_;
-  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr foot_publisher_;
-
-  tf2_ros::TransformBroadcaster base_broadcaster_;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr footprint_to_odom_publisher_;
+  rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr
+    base_to_footprint_publisher_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr foot_publisher_;
 
   rclcpp::TimerBase::SharedPtr odom_data_timer_;
   rclcpp::TimerBase::SharedPtr base_pose_timer_;
@@ -87,7 +86,7 @@ class StateEstimation : public rclcpp::Node
   float heading_;
   rclcpp::Time last_vel_time_;
   rclcpp::Time last_sync_time_;
-  sensor_msgs::msg::Imu::ConstPtr last_imu_;
+  sensor_msgs::msg::Imu last_imu_;
 
   champ::GaitConfig gait_config_;
 
