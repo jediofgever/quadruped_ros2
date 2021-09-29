@@ -35,6 +35,7 @@ champ::Odometry::Time rosTimeToChampTime(const rclcpp::Time & time)
 
 StateEstimation::StateEstimation()
 : Node("state_estimation_node"),
+  tf_broadcaster_(this),
   odometry_(base_, rosTimeToChampTime(this->now()))
 {
 
@@ -68,6 +69,8 @@ StateEstimation::StateEstimation()
   this->declare_parameter("links_map/base", "base_link");
   this->declare_parameter("gait/odom_scaler", 0.9);
   this->declare_parameter("orientation_from_imu", false);
+  rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true) );
+  this->set_parameter(use_sim_time);
 
   this->get_parameter("links_map/base", base_name_);
   this->get_parameter("gait/odom_scaler", gait_config_.odom_scaler);
@@ -101,12 +104,12 @@ StateEstimation::StateEstimation()
 
   node_namespace_ = this->get_namespace();
 
-  /*if (node_namespace_.length() > 1) {
+  if (node_namespace_.length() > 1) {
     node_namespace_.replace(0, 1, "");
     node_namespace_.push_back('/');
   } else {
     node_namespace_ = "";
-  }*/
+  }
 
   odom_frame_ = node_namespace_ + "odom";
   base_footprint_frame_ = node_namespace_ + "base_footprint";
@@ -210,6 +213,18 @@ void StateEstimation::publishFootprintToOdom()
   odom.twist.covariance[0] = 0.3;
   odom.twist.covariance[7] = 0.3;
   odom.twist.covariance[35] = 0.017;
+
+  // WARN THIS NEEDS TO BE TESTED
+  // create a tf as well from acquired footprint to odom
+  geometry_msgs::msg::TransformStamped tf_footprint_to_odom;
+  tf_footprint_to_odom.header.frame_id = odom_frame_;
+  tf_footprint_to_odom.child_frame_id = base_footprint_frame_;
+  tf_footprint_to_odom.header.stamp = this->now();
+  tf_footprint_to_odom.transform.translation.x = odom.pose.pose.position.x;
+  tf_footprint_to_odom.transform.translation.y = odom.pose.pose.position.y;
+  tf_footprint_to_odom.transform.translation.z = odom.pose.pose.position.z;
+  tf_footprint_to_odom.transform.rotation = odom.pose.pose.orientation;
+  tf_broadcaster_.sendTransform(tf_footprint_to_odom);
 
   footprint_to_odom_publisher_->publish(odom);
 }
@@ -399,6 +414,7 @@ void StateEstimation::publishBaseToFootprint()
   rotationMatrix.getRotation(quaternion);
   quaternion.normalize();
 
+
   geometry_msgs::msg::PoseWithCovarianceStamped pose_msg;
   pose_msg.header.frame_id = base_footprint_frame_;
   pose_msg.header.stamp = this->now();
@@ -414,10 +430,26 @@ void StateEstimation::publishBaseToFootprint()
   pose_msg.pose.pose.position.y = 0.0;
   pose_msg.pose.pose.position.z = -(robot_height / (float)foot_in_contact);
 
-  pose_msg.pose.pose.orientation.x = quaternion.x();
+  /*pose_msg.pose.pose.orientation.x = quaternion.x();
   pose_msg.pose.pose.orientation.y = quaternion.y();
   pose_msg.pose.pose.orientation.z = quaternion.z();
-  pose_msg.pose.pose.orientation.w = -quaternion.w();
+  pose_msg.pose.pose.orientation.w = -quaternion.w();*/
+  pose_msg.pose.pose.orientation.x = 0;
+  pose_msg.pose.pose.orientation.y = 0;
+  pose_msg.pose.pose.orientation.z = 0;
+  pose_msg.pose.pose.orientation.w = 1.0;
+
+  // WARN THIS NEEDS TO BE TESTED
+  // create a tf as well from acquired footprint to odom
+  geometry_msgs::msg::TransformStamped tf_base_to_base_footprint;
+  tf_base_to_base_footprint.header.frame_id = base_footprint_frame_;
+  tf_base_to_base_footprint.child_frame_id = base_link_frame_;
+  tf_base_to_base_footprint.header.stamp = this->now();
+  tf_base_to_base_footprint.transform.translation.x = pose_msg.pose.pose.position.x;
+  tf_base_to_base_footprint.transform.translation.y = pose_msg.pose.pose.position.y;
+  tf_base_to_base_footprint.transform.translation.z = pose_msg.pose.pose.position.z;
+  tf_base_to_base_footprint.transform.rotation = pose_msg.pose.pose.orientation;
+  tf_broadcaster_.sendTransform(tf_base_to_base_footprint);
 
   base_to_footprint_publisher_->publish(pose_msg);
 }

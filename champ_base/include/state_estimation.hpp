@@ -101,6 +101,9 @@ class StateEstimation : public rclcpp::Node
   std::string base_link_frame_;
   bool orientation_from_imu_;
 
+  // TF broadcaster
+  tf2_ros::TransformBroadcaster tf_broadcaster_;
+
   void publishFootprintToOdom();
   void publishBaseToFootprint();
   void synchronized_callback(

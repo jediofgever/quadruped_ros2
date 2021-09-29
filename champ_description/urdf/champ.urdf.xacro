@@ -8,7 +8,7 @@
 
     <link name="base_link">
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0.2" rpy="0 0 0" />
             <geometry>
                 <mesh filename="${base_mesh_path}" scale="0.001 0.001 0.001" />
             </geometry>
@@ -28,6 +28,7 @@
             <inertia ixx="${(1/12) * base_mass * (base_y_length * base_y_length + base_z_length * base_z_length)}" ixy="0.0" ixz="0.0" iyy="${(1/12) * base_mass * (base_x_length * base_x_length + base_z_length * base_z_length)}" iyz="0.0" izz="${(1/12) * base_mass * (base_x_length * base_x_length + base_y_length * base_y_length)}" />
         </inertial>
     </link>
+
     <joint name="base_link_to_base_inertia" type="fixed">
         <parent link="base_link" />
         <child link="base_inertia" />
@@ -45,6 +46,8 @@
     <xacro:champ_leg leg="rf" />
     <xacro:champ_leg leg="rh" />
 
+    <xacro:include filename="$(find champ_description)/urdf/simulated_full_sensor_suite.xacro" />
+
     <gazebo>
         <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
             <ros>
@@ -52,9 +55,9 @@
                 <remapping>odom:=odom/ground_truth</remapping>
             </ros>
             <body_name>base_link</body_name>
-            <update_rate>1</update_rate>
-            <xyz_offset>10 10 10</xyz_offset>
-            <rpy_offset>0.1 0.1 0.1</rpy_offset>
+            <update_rate>20</update_rate>
+            <xyz_offset>0 0 0</xyz_offset>
+            <rpy_offset>0.0 0.0 0.0</rpy_offset>
             <gaussian_noise>0.01</gaussian_noise>
         </plugin>
     </gazebo>

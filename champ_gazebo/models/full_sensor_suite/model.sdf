@@ -33,7 +33,7 @@
                     <iyz>0.000</iyz>
                     <izz>0.001</izz>
                 </inertia>
-                <mass>0.564</mass>
+                <mass>0.05</mass>
             </inertial>
             <sensor name="cameradepth" type="depth">
                 <camera name="camera">
@@ -151,7 +151,7 @@
                     <iyz>0.000</iyz>
                     <izz>0.001</izz>
                 </inertia>
-                <mass>0.564</mass>
+                <mass>0.05</mass>
             </inertial>
             <sensor name="wide_angle_camera" type="wideanglecamera">
                 <camera>

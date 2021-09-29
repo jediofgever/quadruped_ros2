@@ -60,6 +60,8 @@ MessageRelay::MessageRelay()
 
   declare_parameter("gazebo", true);
   declare_parameter("has_imu", true);
+  rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true) );
+  set_parameter(use_sim_time);
 
   get_parameter("gazebo", in_gazebo_);
   get_parameter("has_imu", has_imu_);

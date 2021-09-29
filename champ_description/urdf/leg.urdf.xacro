@@ -94,8 +94,8 @@
 
         <gazebo reference="${leg}_lower_leg_link">
             <fdir1>1 0 0</fdir1>
-            <mu1>0.2</mu1>
-            <mu2>0.2</mu2>
+            <mu1>100</mu1>
+            <mu2>100</mu2>
             <minDepth>0.001</minDepth>
             <material>Gazebo/Red</material>
         </gazebo>

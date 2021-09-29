@@ -59,6 +59,8 @@ QuadrupedController::QuadrupedController()
   this->declare_parameter("gazebo", true);
   this->declare_parameter("joint_controller_topic", "joint_group_position_controller/command");
   this->declare_parameter("loop_rate", 100.0);
+  rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true));
+  this->set_parameter(use_sim_time);
 
   this->get_parameter("gait/pantograph_leg", gait_config_.pantograph_leg);
   this->get_parameter("gait/max_linear_velocity_x", gait_config_.max_linear_velocity_x);
