@@ -58,7 +58,7 @@ QuadrupedController::QuadrupedController()
   this->declare_parameter("publish_joint_control", true);
   this->declare_parameter("gazebo", true);
   this->declare_parameter("joint_controller_topic", "joint_trajectory_controller/joint_trajectory");
-  this->declare_parameter("loop_rate", 100.0);
+  this->declare_parameter("loop_rate", 200.0);
   rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true));
   this->set_parameter(use_sim_time);
 
