@@ -53,6 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <trajectory_msgs/msg/joint_trajectory.hpp>
 #include <trajectory_msgs/msg/joint_trajectory_point.hpp>
+#include <urdf/model.h>
+
 
 class QuadrupedController : public rclcpp::Node
 {
@@ -64,6 +66,8 @@ class QuadrupedController : public rclcpp::Node
   rclcpp::Publisher<champ_msgs::msg::ContactsStamped>::SharedPtr foot_contacts_publisher_;
 
   rclcpp::TimerBase::SharedPtr timer_;
+
+  rclcpp::Node::SharedPtr parameter_client_node_;
 
   champ::Velocities req_vel_;
   champ::Pose req_pose_;
@@ -89,6 +93,25 @@ class QuadrupedController : public rclcpp::Node
 
   void cmdVelCallback(const geometry_msgs::msg::Twist::ConstSharedPtr msg);
   void cmdPoseCallback(const geometry_msgs::msg::Pose::ConstSharedPtr msg);
+
+  void getPose(urdf::Pose * pose, std::string ref_link, std::string end_link, urdf::Model & model)
+  {
+    urdf::LinkConstSharedPtr ref_link_ptr = model.getLink(ref_link);
+
+    std::string current_parent_name = end_link;
+    urdf::LinkConstSharedPtr prev_link = model.getLink(current_parent_name);
+
+    while (ref_link_ptr->name != current_parent_name) {
+      urdf::LinkConstSharedPtr current_link = model.getLink(current_parent_name);
+      urdf::Pose current_pose = current_link->parent_joint->parent_to_joint_origin_transform;
+
+      current_parent_name = current_link->getParent()->name;
+      prev_link = model.getLink(current_parent_name);
+      pose->position.x += current_pose.position.x;
+      pose->position.y += current_pose.position.y;
+      pose->position.z += current_pose.position.z;
+    }
+  }
 
 public:
   QuadrupedController();

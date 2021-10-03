@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <champ/quadruped_base/quadruped_components.h>
 #include <champ/geometry/geometry.h>
 #include <champ/quadruped_base/quadruped_base.h>
+#include <urdf/model.h>
 
 
 class StateEstimation : public rclcpp::Node
@@ -104,6 +105,8 @@ class StateEstimation : public rclcpp::Node
   // TF broadcaster
   tf2_ros::TransformBroadcaster tf_broadcaster_;
 
+  rclcpp::Node::SharedPtr parameter_client_node_;
+
   void publishFootprintToOdom();
   void publishBaseToFootprint();
   void synchronized_callback(
@@ -114,6 +117,25 @@ class StateEstimation : public rclcpp::Node
   visualization_msgs::msg::Marker createMarker(
     geometry::Transformation foot_pos, int id,
     std::string frame_id);
+
+  void getPose(urdf::Pose * pose, std::string ref_link, std::string end_link, urdf::Model & model)
+  {
+    urdf::LinkConstSharedPtr ref_link_ptr = model.getLink(ref_link);
+
+    std::string current_parent_name = end_link;
+    urdf::LinkConstSharedPtr prev_link = model.getLink(current_parent_name);
+
+    while (ref_link_ptr->name != current_parent_name) {
+      urdf::LinkConstSharedPtr current_link = model.getLink(current_parent_name);
+      urdf::Pose current_pose = current_link->parent_joint->parent_to_joint_origin_transform;
+
+      current_parent_name = current_link->getParent()->name;
+      prev_link = model.getLink(current_parent_name);
+      pose->position.x += current_pose.position.x;
+      pose->position.y += current_pose.position.y;
+      pose->position.z += current_pose.position.z;
+    }
+  }
 
 public:
   StateEstimation();

@@ -42,7 +42,8 @@ set(dependencies
   trajectory_msgs
   visualization_msgs
   champ_msgs
-  champ)
+  champ
+  urdf)
 
 add_executable(message_relay src/message_relay.cpp)
 ament_target_dependencies(message_relay ${dependencies})

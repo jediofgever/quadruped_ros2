@@ -79,6 +79,10 @@ QuadrupedController::QuadrupedController()
   this->get_parameter("joint_controller_topic", joint_control_topic);
   this->get_parameter("loop_rate", loop_rate);
 
+  gait_config_.knee_orientation = knee_orientation.c_str();
+
+  base_.setGaitConfig(gait_config_);
+
   cmd_vel_subscriber_ = this->create_subscription<geometry_msgs::msg::Twist>(
     "cmd_vel",
     rclcpp::SystemDefaultsQoS(),
@@ -103,17 +107,73 @@ QuadrupedController::QuadrupedController()
       "foot_contacts", 1);
   }
 
-  gait_config_.knee_orientation = knee_orientation.c_str();
+  parameter_client_node_ = std::make_shared<rclcpp::Node>(
+    "parameter_client_node");
 
-  base_.setGaitConfig(gait_config_);
+  rclcpp::SyncParametersClient::SharedPtr parameters_client =
+    std::make_shared<rclcpp::SyncParametersClient>(parameter_client_node_, "robot_state_publisher");
+
+  using namespace std::chrono_literals;
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(
+        parameter_client_node_->get_logger(),
+        "Interrupted while waiting for the parameter service. Exiting.");
+      rclcpp::shutdown();
+    }
+    RCLCPP_INFO(
+      parameter_client_node_->get_logger(),
+      "Remote parameter service not available, waiting again...");
+  }
+  urdf::Model model;
+  auto parameters = parameters_client->get_parameters(
+    {"robot_description"});
+
+  std::string robot_desc;
+  for (auto & parameter : parameters) {
+    robot_desc = parameter.get_value<std::string>();
+  }
+
+  if (!model.initString(robot_desc)) {
+    RCLCPP_ERROR(get_logger(), "Failed to parse urdf file");
+  }
+  RCLCPP_INFO(get_logger(), "Parsed URDF, has got %s name", model.getName().c_str());
 
   //champ::URDF::loadFromServer(base_, nh);
   std::vector<std::string> links_map;
-  links_map.push_back("links_map/left_front");
-  links_map.push_back("links_map/right_front");
-  links_map.push_back("links_map/left_hind");
-  links_map.push_back("links_map/right_hind");
+  links_map.push_back("left_front");
+  links_map.push_back("right_front");
+  links_map.push_back("left_hind");
+  links_map.push_back("right_hind");
 
+  for (int i = 0; i < 4; i++) {
+    //fillLeg(base_.legs[i], nh, model, links_map[i]);
+    this->declare_parameter(links_map[i]);
+    rclcpp::Parameter curr_links_param(links_map[i], std::vector<std::string>({}));
+    this->get_parameter(links_map[i], curr_links_param);
+    std::vector<std::string> curr_links = curr_links_param.as_string_array();
+
+    RCLCPP_INFO(get_logger(), "Got links %d for %s", curr_links.size(), links_map[i].c_str());
+
+    for (int j = 3; j > -1; j--) {
+      std::string ref_link;
+      std::string end_link;
+      if (j > 0) {
+        ref_link = curr_links[j - 1];
+      } else {
+        ref_link = model.getRoot()->name;
+      }
+      end_link = curr_links[j];
+
+      urdf::Pose pose;
+      getPose(&pose, ref_link, end_link, model);
+      double x, y, z;
+      x = pose.position.x;
+      y = pose.position.y;
+      z = pose.position.z;
+      base_.legs[i]->joint_chain[j]->setTranslation(x, y, z);
+    }
+  }
 
   //joint_names_ = champ::URDF::getJointNames(nh);
   joint_names_ = {

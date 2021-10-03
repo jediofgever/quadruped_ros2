@@ -43,6 +43,7 @@ def generate_launch_description():
     tf_prefix = LaunchConfiguration('tf_prefix')
     rviz_config = LaunchConfiguration("rviz_config")
     joy_config_filepath = LaunchConfiguration('config_filepath')
+    link_params = LaunchConfiguration('link_params')
 
     declare_use_simulator = DeclareLaunchArgument(
         'use_simulator',
@@ -70,6 +71,11 @@ def generate_launch_description():
         default_value=os.path.join(
             champ_bringup_share_dir, 'config', 'joystick_xbox.yaml'),
         description='path to locks params.')
+    declare_link_params = DeclareLaunchArgument(
+        'link_params',
+        default_value=os.path.join(
+            champ_bringup_share_dir, 'config', 'links.yaml'),
+        description='path to locks params.')
 
     # DECLARE THE msg relay ROS2 NODE
     declare_message_relay_node = Node(
@@ -78,6 +84,7 @@ def generate_launch_description():
         name='message_relay',
         output='screen',
         namespace='',
+        parameters=[link_params]
         # prefix=['xterm -e gdb -ex run --args'],
     )
 
@@ -88,8 +95,10 @@ def generate_launch_description():
         name='quadruped_controller',
         output='screen',
         namespace='',
-        arguments=['--ros-args', '--log-level', 'INFO']
-        # prefix=['xterm -e gdb -ex run --args'],
+        arguments=['--ros-args', '--log-level', 'INFO'],
+        #prefix=['xterm -e gdb -ex run --args'],
+        parameters=[link_params]
+
     )
 
     # DECLARE THE msg relay ROS2 NODE
@@ -99,6 +108,7 @@ def generate_launch_description():
         name='state_estimation',
         output='screen',
         namespace='',
+        parameters=[link_params]
         # prefix=['xterm -e gdb -ex run --args'],
     )
 
@@ -194,6 +204,7 @@ def generate_launch_description():
         declare_use_rviz,
         declare_tf_prefix,
         declare_rviz_config,
+        declare_link_params,
         declare_quadruped_controller_node,
         declare_state_estimation_node,
         declare_message_relay_node,
@@ -207,5 +218,5 @@ def generate_launch_description():
         joy_config_cmd,
         decleare_localization_params,
         base_to_footprint_ekf,
-        footprint_to_odom_ekf
+        footprint_to_odom_ekf,
     ])
