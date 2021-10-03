@@ -38,73 +38,70 @@
 #define XMLRPCHELPERS_H
 
 #include <sstream>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 namespace xh
 {
 
-class XmlrpcHelperException : public ros::Exception
-{
-    public:
-    XmlrpcHelperException(const std::string& what)
-        : ros::Exception(what) {}
-};
+  class XmlrpcHelperException : public std::runtime_error
+  {
+  public:
+    XmlrpcHelperException(const std::string & what)
+    : std::runtime_error(what) {}
+  };
 
-typedef XmlRpc::XmlRpcValue Struct;
-typedef XmlRpc::XmlRpcValue Array;
-
-template <class T>
-void fetchParam(ros::NodeHandle *nh, const std::string& param_name, T& output)
-{
-    XmlRpc::XmlRpcValue val;
-    if (!nh->getParamCached(param_name, val))
-    {
-        std::ostringstream err_msg;
-        err_msg << "could not load parameter '" << param_name << "'. (namespace: "
-        << nh->getNamespace() << ")";
-        throw XmlrpcHelperException(err_msg.str());
+  template<class T>
+  void fetchParam(rclcpp::Node * node, const std::string & param_name, T & output)
+  {
+    rclcpp::Parameter param;
+    if (!node->has_parameter(param_name)) {
+      std::ostringstream err_msg;
+      err_msg << "could not load parameter '" << param_name << "'. (namespace: " <<
+        node->get_namespace() << ")";
+      throw XmlrpcHelperException(err_msg.str());
+    } else {
+      param = node->get_parameter(param_name);
     }
+    output = static_cast<T>(param.get_value());
+  }
 
-    output = static_cast<T>(val);
-}
-
-void checkArrayItem(const Array& col, int index)
-{
-    if (col.getType() != XmlRpc::XmlRpcValue::TypeArray)
-        throw XmlrpcHelperException("not an array");
-    if(index >= col.size())
-    {
-        std::ostringstream err_msg;
-        err_msg << "index '" << index << "' is over array capacity";
-        throw XmlrpcHelperException(err_msg.str());
+  void checkArrayItem(const Array & col, int index)
+  {
+    if (col.getType() != XmlRpc::XmlRpcValue::TypeArray) {
+      throw XmlrpcHelperException("not an array");
     }
-}
-
-void checkStructMember(const Struct& col, const std::string& member)
-{
-    if (col.getType() != XmlRpc::XmlRpcValue::TypeStruct)
-        throw XmlrpcHelperException("not a struct");
-    if (!col.hasMember(member))
-    {
-        std::ostringstream err_msg;
-        err_msg << "could not find member '" << member << "'";
-        throw XmlrpcHelperException(err_msg.str());
+    if (index >= col.size()) {
+      std::ostringstream err_msg;
+      err_msg << "index '" << index << "' is over array capacity";
+      throw XmlrpcHelperException(err_msg.str());
     }
-}
+  }
 
-template <class T>
-void getArrayItem(Array& col, int index, T& output) // XXX: XmlRpcValue::operator[] is not const
-{
+  void checkStructMember(const Struct & col, const std::string & member)
+  {
+    if (col.getType() != XmlRpc::XmlRpcValue::TypeStruct) {
+      throw XmlrpcHelperException("not a struct");
+    }
+    if (!col.hasMember(member)) {
+      std::ostringstream err_msg;
+      err_msg << "could not find member '" << member << "'";
+      throw XmlrpcHelperException(err_msg.str());
+    }
+  }
+
+  template<class T>
+  void getArrayItem(Array & col, int index, T & output) // XXX: XmlRpcValue::operator[] is not const
+  {
     checkArrayItem(col, index);
     output = static_cast<T>(col[index]);
-}
+  }
 
-template <class T>
-void getStructMember(Struct& col, const std::string& member, T& output)
-{
+  template<class T>
+  void getStructMember(Struct & col, const std::string & member, T & output)
+  {
     checkStructMember(col, member);
     output = static_cast<T>(col[member]);
-}
+  }
 
 } // namespace xh
 

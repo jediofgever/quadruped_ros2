@@ -108,6 +108,13 @@ QuadrupedController::QuadrupedController()
   base_.setGaitConfig(gait_config_);
 
   //champ::URDF::loadFromServer(base_, nh);
+  std::vector<std::string> links_map;
+  links_map.push_back("links_map/left_front");
+  links_map.push_back("links_map/right_front");
+  links_map.push_back("links_map/left_hind");
+  links_map.push_back("links_map/right_hind");
+
+
   //joint_names_ = champ::URDF::getJointNames(nh);
   joint_names_ = {
     "lf_hip_joint",
@@ -128,6 +135,8 @@ QuadrupedController::QuadrupedController()
     std::bind(&QuadrupedController::controlLoop, this));
 
   req_pose_.position.z = gait_config_.nominal_height;
+
+  RCLCPP_INFO(get_logger(), "Creating .. ");
 }
 
 void QuadrupedController::controlLoop()
@@ -144,6 +153,8 @@ void QuadrupedController::controlLoop()
 
   publishFootContacts(foot_contacts);
   publishJoints(target_joint_positions);
+
+  //RCLCPP_DEBUG(get_logger(), "Executing control loop.. ");
 }
 
 void QuadrupedController::cmdVelCallback(const geometry_msgs::msg::Twist::ConstSharedPtr msg)
@@ -151,6 +162,8 @@ void QuadrupedController::cmdVelCallback(const geometry_msgs::msg::Twist::ConstS
   req_vel_.linear.x = msg->linear.x;
   req_vel_.linear.y = msg->linear.y;
   req_vel_.angular.z = msg->angular.z;
+
+  RCLCPP_DEBUG(get_logger(), "Got velocity commands.. ");
 }
 
 void QuadrupedController::cmdPoseCallback(const geometry_msgs::msg::Pose::ConstSharedPtr msg)
@@ -171,6 +184,9 @@ void QuadrupedController::cmdPoseCallback(const geometry_msgs::msg::Pose::ConstS
   req_pose_.position.x = msg->position.x;
   req_pose_.position.y = msg->position.y;
   req_pose_.position.z = msg->position.z + gait_config_.nominal_height;
+
+  RCLCPP_DEBUG(get_logger(), "Got go to pose command.. ");
+
 }
 
 void QuadrupedController::publishJoints(float target_joints[12])

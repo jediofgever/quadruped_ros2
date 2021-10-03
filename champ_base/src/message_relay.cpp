@@ -59,7 +59,7 @@ MessageRelay::MessageRelay()
     std::bind(&MessageRelay::footContactCallback, this, std::placeholders::_1));
 
   declare_parameter("gazebo", true);
-  declare_parameter("has_imu", true);
+  declare_parameter("has_imu", false);
   rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true) );
   set_parameter(use_sim_time);
 

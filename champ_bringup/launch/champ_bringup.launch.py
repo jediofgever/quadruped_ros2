@@ -88,6 +88,7 @@ def generate_launch_description():
         name='quadruped_controller',
         output='screen',
         namespace='',
+        arguments=['--ros-args', '--log-level', 'INFO']
         # prefix=['xterm -e gdb -ex run --args'],
     )
 
@@ -169,7 +170,8 @@ def generate_launch_description():
     localization_params = LaunchConfiguration('localization_params')
     decleare_localization_params = DeclareLaunchArgument(
         'localization_params',
-        default_value=os.path.join(champ_bringup_share_dir, 'config', 'robot_localization_params.yaml'),
+        default_value=os.path.join(
+            champ_bringup_share_dir, 'config', 'robot_localization_params.yaml'),
         description='Path to the vox_nav parameters file.')
 
     base_to_footprint_ekf = Node(package='robot_localization',

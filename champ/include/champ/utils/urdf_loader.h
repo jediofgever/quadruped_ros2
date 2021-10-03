@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef URDF_LOADER_H
 #define URDF_LOADER_H
 
-#include "ros/ros.h"
+#include "rclcpp/rclcpp.hpp"
 #include <urdf/model.h>
 #include <utils/xmlrpc_helpers.h>
 
