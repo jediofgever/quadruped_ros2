@@ -5,7 +5,7 @@ teleop_twist_joy_node:
     scale_linear:
       x: 0.7
     scale_linear_turbo:
-      x: 4.5
+      x: 1.5
 
     axis_angular:  # Left thumb stick horizontal
       yaw: 0

@@ -19,9 +19,11 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import ExecuteProcess
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
-from launch.substitutions import Command
+from launch.substitutions import Command, PathJoinSubstitution, FindExecutable
 from launch.substitutions import PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.substitutions import FindPackageShare
+
 import os
 
 # This will only take in effect if you are running THorvald in Simulation
@@ -98,7 +100,6 @@ def generate_launch_description():
         arguments=['--ros-args', '--log-level', 'INFO'],
         #prefix=['xterm -e gdb -ex run --args'],
         parameters=[link_params]
-
     )
 
     # DECLARE THE msg relay ROS2 NODE
@@ -150,6 +151,8 @@ def generate_launch_description():
                                                condition=IfCondition(
                                                    use_simulator),
                                                executable='spawn_entity.py',
+                                               parameters=[
+                                                   {"use_sim_time": use_sim_time}],
                                                arguments=[
                                                    '-entity', '',
                                                    '-topic', '/robot_description'],
@@ -198,6 +201,18 @@ def generate_launch_description():
                                  parameters=[localization_params],
                                  remappings=[('odometry/filtered', 'odom')])
 
+    load_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_state_broadcaster'],
+        output='screen'
+    )
+
+    load_joint_trajectory_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_trajectory_controller'],
+        output='screen'
+    )
+
     return LaunchDescription([
         declare_use_simulator,
         declare_use_sim_time,
@@ -219,4 +234,6 @@ def generate_launch_description():
         decleare_localization_params,
         base_to_footprint_ekf,
         footprint_to_odom_ekf,
+        load_joint_state_controller,
+        load_joint_trajectory_controller,
     ])

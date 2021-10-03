@@ -39,7 +39,7 @@ QuadrupedController::QuadrupedController()
   leg_controller_(base_, rosTimeToChampTime(this->now())),
   kinematics_(base_)
 {
-  std::string joint_control_topic = "joint_group_position_controller/command";
+  std::string joint_control_topic;
   std::string knee_orientation;
   double loop_rate = 200.0;
 
@@ -57,7 +57,7 @@ QuadrupedController::QuadrupedController()
   this->declare_parameter("publish_joint_states", true);
   this->declare_parameter("publish_joint_control", true);
   this->declare_parameter("gazebo", true);
-  this->declare_parameter("joint_controller_topic", "joint_group_position_controller/command");
+  this->declare_parameter("joint_controller_topic", "joint_trajectory_controller/joint_trajectory");
   this->declare_parameter("loop_rate", 100.0);
   rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true));
   this->set_parameter(use_sim_time);
@@ -182,7 +182,7 @@ QuadrupedController::QuadrupedController()
     "lf_lower_leg_joint",
     "lh_hip_joint",
     "lh_upper_leg_joint",
-    "lh_lower_leg_joint"
+    "lh_lower_leg_joint",
     "rf_hip_joint",
     "rf_upper_leg_joint",
     "rf_lower_leg_joint",
@@ -259,7 +259,7 @@ void QuadrupedController::publishJoints(float target_joints[12])
     trajectory_msgs::msg::JointTrajectoryPoint point;
     point.positions.resize(12);
 
-    point.time_from_start = rclcpp::Duration(1.0 / 60.0);
+    point.time_from_start = rclcpp::Duration::from_seconds(0.001);
     for (size_t i = 0; i < 12; i++) {
       point.positions[i] = target_joints[i];
     }
