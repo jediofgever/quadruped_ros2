@@ -66,7 +66,7 @@
 
         <include>
             <pose> 0 0 0.0 0.0 0.0 0.0</pose>
-            <uri>model://ground_container_office</uri>
+            <uri>model://ground_grass_plane</uri>
         </include>
         
         <!-- 

@@ -41,7 +41,7 @@ MessageRelay::MessageRelay()
     "joint_states",
     custom_qos);
   joint_commands_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(
-    "joint_group_position_controller/command", custom_qos);
+    "joint_trajectory_controller/joint_trajectory", custom_qos);
 
   imu_raw_subscriber_ = this->create_subscription<champ_msgs::msg::Imu>(
     "imu/raw",

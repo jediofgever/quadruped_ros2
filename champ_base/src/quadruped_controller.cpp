@@ -41,7 +41,7 @@ QuadrupedController::QuadrupedController()
 {
   std::string joint_control_topic;
   std::string knee_orientation;
-  double loop_rate = 200.0;
+  double loop_rate;
 
   this->declare_parameter("gait/pantograph_leg", false);
   this->declare_parameter("gait/max_linear_velocity_x", 0.5);
@@ -259,7 +259,7 @@ void QuadrupedController::publishJoints(float target_joints[12])
     trajectory_msgs::msg::JointTrajectoryPoint point;
     point.positions.resize(12);
 
-    point.time_from_start = rclcpp::Duration::from_seconds(0.001);
+    point.time_from_start = rclcpp::Duration::from_seconds(1.0 / 200.0);
     for (size_t i = 0; i < 12; i++) {
       point.positions[i] = target_joints[i];
     }
