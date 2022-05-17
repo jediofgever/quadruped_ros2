@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
-    update_rate: 200
-    publish_rate: 200
+    update_rate: 50
+    use_sim_time: true
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -11,12 +11,12 @@ controller_manager:
 
 joint_state_broadcaster:
   ros__parameters:
-    publish_rate: 200
+    publish_rate: 50
 
 joint_trajectory_controller:   
   ros__parameters:
-    state_publish_rate: 200.0
-    action_monitor_rate: 200.0
+    state_publish_rate: 50.0 # Defaults to 50
+    action_monitor_rate: 20.0 # Defaults to 20
     joints:
         - lf_hip_joint
         - lf_upper_leg_joint
@@ -34,18 +34,24 @@ joint_trajectory_controller:
       - position
     state_interfaces:
       - position
-      - velocity
+
+    allow_partial_joints_goal: false # Defaults to false
+    open_loop_control: false
+    allow_integration_in_goal_trajectories: false
+    constraints:
+      stopped_velocity_tolerance: 0.001 # Defaults to 0.01
+      goal_time: 0.0 # Defaults to 0.0 (start immediately)   
     gains:
-      lf_hip_joint        : {p: 1000, d: 0.01, i: 20}
-      lf_upper_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      lf_lower_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      rf_hip_joint        : {p: 1000, d: 0.01, i: 20}
-      rf_upper_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      rf_lower_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      lh_hip_joint        : {p: 1000, d: 0.01, i: 20}
-      lh_upper_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      lh_lower_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      rh_hip_joint        : {p: 1000, d: 0.01, i: 20}
-      rh_upper_leg_joint  : {p: 1000, d: 0.01, i: 20}
-      rh_lower_leg_joint  : {p: 1000, d: 0.01, i: 20}  
-      
+        lf_hip_joint        : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        lf_upper_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        lf_lower_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rf_hip_joint        : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rf_upper_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rf_lower_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        lh_hip_joint        : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        lh_upper_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        lh_lower_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rh_hip_joint        : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rh_upper_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+        rh_lower_leg_joint  : {p: 9, i: 0.03, d: 0.3055, i_clamp_min:  -1000, i_clamp_max: 1000}
+            

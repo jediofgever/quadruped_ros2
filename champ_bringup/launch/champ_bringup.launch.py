@@ -80,17 +80,6 @@ def generate_launch_description():
         description='path to locks params.')
 
     # DECLARE THE msg relay ROS2 NODE
-    declare_message_relay_node = Node(
-        package='champ_base',
-        executable='message_relay',
-        name='message_relay',
-        output='screen',
-        namespace='',
-        parameters=[link_params]
-        # prefix=['xterm -e gdb -ex run --args'],
-    )
-
-    # DECLARE THE msg relay ROS2 NODE
     declare_quadruped_controller_node = Node(
         package='champ_base',
         executable='quadruped_controller',
@@ -98,9 +87,10 @@ def generate_launch_description():
         output='screen',
         namespace='',
         arguments=['--ros-args', '--log-level', 'INFO'],
-        #prefix=['xterm -e gdb -ex run --args'],
-        parameters=[link_params]
-    )
+        # prefix=['xterm -e gdb -ex run --args'],
+        parameters=[{"use_sim_time": use_sim_time},
+                    link_params],
+        remappings=[('cmd_vel', 'vox_nav/cmd_vel')])
 
     # DECLARE THE msg relay ROS2 NODE
     declare_state_estimation_node = Node(
@@ -109,7 +99,9 @@ def generate_launch_description():
         name='state_estimation',
         output='screen',
         namespace='',
-        parameters=[link_params]
+        parameters=[{"use_sim_time": use_sim_time},
+                    link_params],
+        remappings=[('cmd_vel', 'vox_nav/cmd_vel')]
         # prefix=['xterm -e gdb -ex run --args'],
     )
 
@@ -126,25 +118,6 @@ def generate_launch_description():
                     {'robot_description': Command(['xacro ', xacro_full_dir])}],
         remappings=[('/tf', 'tf'),
                     ('/tf_static', 'tf_static')])
-
-    declare_joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        parameters=[{"use_sim_time": use_sim_time}],
-        remappings=[('joint_states', 'joint_states')])
-
-    # CALL JOYSTICK TELEOP
-    joy_config_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(get_package_share_directory('teleop_twist_joy'), 'launch', 'teleop-launch.py')]),
-        launch_arguments={
-            'config_filepath': joy_config_filepath}.items()
-    )
-    # TWIST MUX FOR MIXING MULTIPLE CMD VEL COMMANDS
-    twist_mux_cmd = IncludeLaunchDescription(PythonLaunchDescriptionSource(
-        os.path.join(get_package_share_directory('twist_mux'), 'launch', 'twist_mux_launch.py')),
-    )
 
     # SPAWN THE ROBOT TO GAZEBO IF use_simulator, FROM THE TOPIC "robot_description"
     declare_spawn_entity_to_gazebo_node = Node(package='gazebo_ros',
@@ -222,15 +195,11 @@ def generate_launch_description():
         declare_link_params,
         declare_quadruped_controller_node,
         declare_state_estimation_node,
-        declare_message_relay_node,
         declare_robot_state_publisher_node,
-        declare_joint_state_publisher_node,
         declare_rviz_launch_include,
         declare_spawn_entity_to_gazebo_node,
         declare_start_gazebo_cmd,
         declare_joy_config_filepath,
-        twist_mux_cmd,
-        joy_config_cmd,
         decleare_localization_params,
         base_to_footprint_ekf,
         footprint_to_odom_ekf,

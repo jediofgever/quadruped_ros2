@@ -1,5 +1,19 @@
 /**:
   ros__parameters:
+    gait:
+      knee_orientation : ">>"
+      pantograph_leg : false
+      odom_scaler: 0.1
+      max_linear_velocity_x : 0.8
+      max_linear_velocity_y : 0.50
+      max_angular_velocity_z : 1.0
+      com_x_translation: 0.0
+      swing_height : 0.04
+      stance_depth : 0.00
+      stance_duration : 0.40
+      nominal_height : 0.20
+    loop_rate: 50.0  
+    use_sim_time: true
     base: base_link
     left_front: ["lf_hip_link", "lf_upper_leg_link", "lf_lower_leg_link", "lf_foot_link"]
     right_front: ["rf_hip_link", "rf_upper_leg_link", "rf_lower_leg_link", "rf_foot_link"]

@@ -32,7 +32,6 @@ champ::Odometry::Time rosTimeToChampTime(const rclcpp::Time & time)
   return time.nanoseconds() / 1000ul;
 }
 
-
 StateEstimation::StateEstimation()
 : Node("state_estimation_node"),
   tf_broadcaster_(this),
@@ -54,7 +53,7 @@ StateEstimation::StateEstimation()
       std::placeholders::_1,
       std::placeholders::_2));
 
-  auto custom_qos = rclcpp::QoS(10);
+  auto custom_qos = rclcpp::QoS(1);
 
   footprint_to_odom_publisher_ =
     this->create_publisher<nav_msgs::msg::Odometry>("odom/raw", custom_qos);
@@ -66,14 +65,12 @@ StateEstimation::StateEstimation()
   foot_publisher_ =
     this->create_publisher<visualization_msgs::msg::MarkerArray>("foot", custom_qos);
 
-  this->declare_parameter("links_map/base", "base_link");
-  this->declare_parameter("gait/odom_scaler", 0.9);
+  this->declare_parameter("base", "base_link");
+  this->declare_parameter("gait.odom_scaler", 0.9);
   this->declare_parameter("orientation_from_imu", false);
-  rclcpp::Parameter use_sim_time("use_sim_time", rclcpp::ParameterValue(true) );
-  this->set_parameter(use_sim_time);
 
-  this->get_parameter("links_map/base", base_name_);
-  this->get_parameter("gait/odom_scaler", gait_config_.odom_scaler);
+  this->get_parameter("base", base_name_);
+  this->get_parameter("gait.odom_scaler", gait_config_.odom_scaler);
   this->get_parameter("orientation_from_imu", orientation_from_imu_);
 
 
