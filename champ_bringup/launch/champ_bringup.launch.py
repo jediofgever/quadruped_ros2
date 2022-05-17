@@ -73,45 +73,6 @@ def generate_launch_description():
         default_value=os.path.join(
             champ_bringup_share_dir, 'config', 'joystick_xbox.yaml'),
         description='path to locks params.')
-    declare_link_params = DeclareLaunchArgument(
-        'link_params',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'links.yaml'),
-        description='path to locks params.')
-
-    # DECLARE THE msg relay ROS2 NODE
-    declare_message_relay_node = Node(
-        package='champ_base',
-        executable='message_relay',
-        name='message_relay',
-        output='screen',
-        namespace='',
-        parameters=[link_params]
-        # prefix=['xterm -e gdb -ex run --args'],
-    )
-
-    # DECLARE THE msg relay ROS2 NODE
-    declare_quadruped_controller_node = Node(
-        package='champ_base',
-        executable='quadruped_controller',
-        name='quadruped_controller',
-        output='screen',
-        namespace='',
-        arguments=['--ros-args', '--log-level', 'INFO'],
-        #prefix=['xterm -e gdb -ex run --args'],
-        parameters=[link_params]
-    )
-
-    # DECLARE THE msg relay ROS2 NODE
-    declare_state_estimation_node = Node(
-        package='champ_base',
-        executable='state_estimation',
-        name='state_estimation',
-        output='screen',
-        namespace='',
-        parameters=[link_params]
-        # prefix=['xterm -e gdb -ex run --args'],
-    )
 
     # DECLARE THE ROBOT STATE PUBLISHER NODE
     xacro_file_name = 'champ.urdf.xacro'
@@ -126,25 +87,6 @@ def generate_launch_description():
                     {'robot_description': Command(['xacro ', xacro_full_dir])}],
         remappings=[('/tf', 'tf'),
                     ('/tf_static', 'tf_static')])
-
-    declare_joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        parameters=[{"use_sim_time": use_sim_time}],
-        remappings=[('joint_states', 'joint_states')])
-
-    # CALL JOYSTICK TELEOP
-    joy_config_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(get_package_share_directory('teleop_twist_joy'), 'launch', 'teleop-launch.py')]),
-        launch_arguments={
-            'config_filepath': joy_config_filepath}.items()
-    )
-    # TWIST MUX FOR MIXING MULTIPLE CMD VEL COMMANDS
-    twist_mux_cmd = IncludeLaunchDescription(PythonLaunchDescriptionSource(
-        os.path.join(get_package_share_directory('twist_mux'), 'launch', 'twist_mux_launch.py')),
-    )
 
     # SPAWN THE ROBOT TO GAZEBO IF use_simulator, FROM THE TOPIC "robot_description"
     declare_spawn_entity_to_gazebo_node = Node(package='gazebo_ros',
@@ -163,7 +105,7 @@ def generate_launch_description():
         get_package_share_directory('champ_gazebo'), 'worlds/', 'void.world'),
     declare_start_gazebo_cmd = ExecuteProcess(
         cmd=[
-            'gazebo', '--verbose', gazebo_world,
+            'gazebo', '--debug', '--verbose', gazebo_world,
             '-s', 'libgazebo_ros_factory.so', '-s', 'libgazebo_ros_init.so'
         ],
         condition=IfCondition(PythonExpression(
@@ -180,34 +122,45 @@ def generate_launch_description():
         'rviz_config': rviz_config
     }.items())
 
-    localization_params = LaunchConfiguration('localization_params')
-    decleare_localization_params = DeclareLaunchArgument(
-        'localization_params',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'robot_localization_params.yaml'),
-        description='Path to the vox_nav parameters file.')
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution(
+                [champ_description_share_dir,
+                 "urdf", xacro_file_name]
+            ),
+        ]
+    )
+    robot_description = {"robot_description": robot_description_content}
 
-    base_to_footprint_ekf = Node(package='robot_localization',
-                                 executable='ekf_node',
-                                 name='base_to_footprint_ekf',
-                                 output='screen',
-                                 parameters=[localization_params],
-                                 remappings=[('odometry/filtered', 'odometry/local')])
+    robot_controllers = PathJoinSubstitution(
+        [
+            FindPackageShare("champ_bringup"),
+            "config",
+            "ros2_control.yaml",
+        ]
+    )
 
-    footprint_to_odom_ekf = Node(package='robot_localization',
-                                 executable='ekf_node',
-                                 name='footprint_to_odom_ekf',
-                                 output='screen',
-                                 parameters=[localization_params],
-                                 remappings=[('odometry/filtered', 'odom')])
+    control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[{"use_sim_time": use_sim_time},
+                    robot_description,
+                    robot_controllers],
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
+        },
+    )
 
-    load_joint_state_controller = ExecuteProcess(
+    joint_state_broadcaster = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
              'joint_state_broadcaster'],
         output='screen'
     )
 
-    load_joint_trajectory_controller = ExecuteProcess(
+    joint_trajectory_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
              'joint_trajectory_controller'],
         output='screen'
@@ -219,21 +172,11 @@ def generate_launch_description():
         declare_use_rviz,
         declare_tf_prefix,
         declare_rviz_config,
-        declare_link_params,
-        declare_quadruped_controller_node,
-        declare_state_estimation_node,
-        declare_message_relay_node,
         declare_robot_state_publisher_node,
-        declare_joint_state_publisher_node,
         declare_rviz_launch_include,
         declare_spawn_entity_to_gazebo_node,
         declare_start_gazebo_cmd,
         declare_joy_config_filepath,
-        twist_mux_cmd,
-        joy_config_cmd,
-        decleare_localization_params,
-        base_to_footprint_ekf,
-        footprint_to_odom_ekf,
-        load_joint_state_controller,
-        load_joint_trajectory_controller,
+        joint_state_broadcaster,
+        joint_trajectory_controller
     ])

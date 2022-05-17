@@ -116,6 +116,7 @@
             <parent link="base_link" />
             <child link="${leg}_hip_link" />
             <origin xyz="${base_to_hip_xyz}" rpy="0 0 0" />
+            <dynamics damping="0.0" friction="1.0" />
         </joint>
 
         <joint name="${leg}_upper_leg_joint" type="revolute">
@@ -124,6 +125,7 @@
             <parent link="${leg}_hip_link" />
             <child link="${leg}_upper_leg_link" />
             <origin xyz="0 ${hip_to_upper_leg} 0" rpy="0 0 0" />
+            <dynamics damping="0.0" friction="1.0" />
         </joint>
 
         <joint name="${leg}_lower_leg_joint" type="revolute">
@@ -132,6 +134,7 @@
             <parent link="${leg}_upper_leg_link" />
             <child link="${leg}_lower_leg_link" />
             <origin xyz="0 0 -${upper_leg_to_lower_leg_distance}" rpy="0 0 0" />
+            <dynamics damping="0.0" friction="1.0" />
         </joint>
 
         <joint name="${leg}_foot_joint" type="fixed">
@@ -174,37 +177,5 @@
             </joint>
         </ros2_control>
 
-        <transmission name="${leg}_hip_joint_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${leg}_hip_joint">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${leg}_hip_joint_motor">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
-
-        <transmission name="${leg}_upper_leg_joint_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${leg}_upper_leg_joint">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${leg}_upper_leg_joint_motor">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
-
-        <transmission name="${leg}_lower_leg_joint_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${leg}_lower_leg_joint">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${leg}_lower_joint_motor">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
     </xacro:macro>
 </robot>
