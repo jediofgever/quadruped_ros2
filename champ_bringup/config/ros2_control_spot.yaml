@@ -1,0 +1,58 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 1000
+    use_sim_time: true
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    joint_trajectory_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+joint_state_broadcaster:
+  ros__parameters:
+    publish_rate: 1000
+
+joint_trajectory_controller:   
+  ros__parameters:
+    state_publish_rate: 1000.0 # Defaults to 50
+    action_monitor_rate: 1000.0 # Defaults to 20
+    joints:
+        - front_left_hip_x
+        - front_left_hip_y
+        - front_left_knee
+        - front_right_hip_x
+        - front_right_hip_y
+        - front_right_knee
+        - rear_left_hip_x
+        - rear_left_hip_y
+        - rear_left_knee
+        - rear_right_hip_x
+        - rear_right_hip_y
+        - rear_right_knee
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+
+    allow_partial_joints_goal: false # Defaults to false
+    open_loop_control: false
+    allow_integration_in_goal_trajectories: false
+    constraints:
+      stopped_velocity_tolerance: 0.1 # Defaults to 0.01
+      goal_time: 0.0 # Defaults to 0.0 (start immediately)   
+    gains:
+        front_left_hip_x  : {p: 250, i: 0.2, d: 5.0}
+        front_left_hip_y  : {p: 250, i: 0.2, d: 5.0}
+        front_left_knee : {p: 250, i: 0.2, d: 5.0}
+        front_right_hip_x  : {p: 250, i: 0.2, d: 5.0}
+        front_right_hip_y  : {p: 250, i: 0.2, d: 5.0}
+        front_right_knee : {p: 250, i: 0.2, d: 5.0}
+        rear_left_hip_x  : {p: 250, i: 0.2, d: 5.0}
+        rear_left_hip_y  : {p: 250, i: 0.2, d: 5.0}
+        rear_left_knee : {p: 250, i: 0.2, d: 5.0}
+        rear_right_hip_x  : {p: 250, i: 0.2, d: 5.0}
+        rear_right_hip_y  : {p: 250, i: 0.2, d: 5.0}
+        rear_right_knee : {p: 250, i: 0.2, d: 5.0}
+
+            

@@ -2,6 +2,27 @@
 <sdf version="1.6">
     <world name="void_world">
 
+        <physics type="ode">
+            <real_time_update_rate>1000.0</real_time_update_rate>
+            <max_step_size>0.001</max_step_size>
+            <real_time_factor>1</real_time_factor>
+            <ode>
+                <solver>
+                    <type>quick</type>
+                    <iters>150</iters>
+                    <precon_iters>0</precon_iters>
+                    <sor>1.400000</sor>
+                    <use_dynamic_moi_rescaling>1</use_dynamic_moi_rescaling>
+                </solver>
+                <constraints>
+                    <cfm>0.00001</cfm>
+                    <erp>0.2</erp>
+                    <contact_max_correcting_vel>2000.000000</contact_max_correcting_vel>
+                    <contact_surface_layer>0.01000</contact_surface_layer>
+                </constraints>
+            </ode>
+        </physics>
+
         <include>
             <uri>model://ground_plane</uri>
         </include>
@@ -11,10 +32,9 @@
 
         <!-- 
         <include>
-            <pose>0.0 0 0.25 0.0 0.0 0.0</pose>
-            <uri>model://full_sensor_suite</uri>
-        </include> 
-
+            <pose>4.0 0 0.6 0.0 0.0 0.0</pose>
+            <uri>model://spot</uri>
+        </include>
         <plugin name="sensor_base_attacher_plugin" filename="libsensor_base_attacher_plugin.so">
             <robot_model_name>champ</robot_model_name>
             <robot_base_link_name>base_link</robot_base_link_name>

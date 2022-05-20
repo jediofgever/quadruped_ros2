@@ -101,12 +101,15 @@ def generate_launch_description():
         namespace='',
         parameters=[{"use_sim_time": use_sim_time},
                     link_params],
-        remappings=[('cmd_vel', 'vox_nav/cmd_vel')]
-        # prefix=['xterm -e gdb -ex run --args'],
+        remappings=[('cmd_vel', 'vox_nav/cmd_vel')],
+        prefix=['xterm -e gdb -ex run --args'],
     )
 
     # DECLARE THE ROBOT STATE PUBLISHER NODE
-    xacro_file_name = 'champ.urdf.xacro'
+
+    #xacro_file_name = 'champ.urdf.xacro'
+    xacro_file_name = 'spot.urdf.xacro'
+
     xacro_full_dir = os.path.join(
         champ_description_share_dir, 'urdf', xacro_file_name)
     declare_robot_state_publisher_node = Node(
@@ -128,7 +131,7 @@ def generate_launch_description():
                                                    {"use_sim_time": use_sim_time}],
                                                arguments=[
                                                    '-entity', '',
-                                                   '-topic', '/robot_description'],
+                                                   '-topic', '/robot_description', "-z", "0.84"],
                                                output='screen')
 
     # START GAZEBO ONLY IF use_simulator IS SET TO TRUE

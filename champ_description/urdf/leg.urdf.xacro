@@ -94,21 +94,49 @@
 
         <gazebo reference="${leg}_lower_leg_link">
             <material>Gazebo/FlatBlack</material>
-            <mu1>1.0</mu1>
-            <mu2>1.0</mu2>
-            <minDepth>0.0002</minDepth>
-            <kp value="1000000.0" />
-            <kd value="100.0" />
+            <collision>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>100</mu>
+                            <mu2>100</mu2>
+                            <slip1>0</slip1>
+                            <slip2>0</slip2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <kp>1000000.0</kp>
+                            <kd>100.0</kd>
+                            <min_depth>0.001</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
         </gazebo>
 
         <link name="${leg}_foot_link" />
         <gazebo reference="${leg}_foot_link">
             <material>Gazebo/FlatBlack</material>
-            <mu1>1.0</mu1>
-            <mu2>1.0</mu2>
-            <minDepth>0.0002</minDepth>
-            <kp value="1000000.0" />
-            <kd value="100.0" />
+            <collision>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>100</mu>
+                            <mu2>100</mu2>
+                            <slip1>0</slip1>
+                            <slip2>0</slip2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <kp>1000000.0</kp>
+                            <kd>100.0</kd>
+                            <min_depth>0.001</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
         </gazebo>
 
         <joint name="${leg}_debug_joint" type="fixed">
@@ -193,7 +221,7 @@
             </joint>
             <actuator name="${leg}_hip_joint_motor">
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>5</mechanicalReduction>
+                <mechanicalReduction>1</mechanicalReduction>
             </actuator>
         </transmission>
 
@@ -204,7 +232,7 @@
             </joint>
             <actuator name="${leg}_upper_leg_joint_motor">
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>5</mechanicalReduction>
+                <mechanicalReduction>1</mechanicalReduction>
             </actuator>
         </transmission>
 
@@ -215,7 +243,7 @@
             </joint>
             <actuator name="${leg}_lower_joint_motor">
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-                <mechanicalReduction>5</mechanicalReduction>
+                <mechanicalReduction>1</mechanicalReduction>
             </actuator>
         </transmission>
 

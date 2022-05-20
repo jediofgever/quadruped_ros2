@@ -152,8 +152,8 @@ StateEstimation::StateEstimation()
     }
   }
 
-  /*joint_names_ = champ::URDF::getJointNames(nh);*/
-  joint_names_ = {
+  /*joint_names_ = champ::URDF::getJointNames(nh); CHAMP*/
+  /*joint_names_ = {
     "lf_hip_joint",
     "lf_upper_leg_joint",
     "lf_lower_leg_joint",
@@ -165,7 +165,22 @@ StateEstimation::StateEstimation()
     "rf_lower_leg_joint",
     "rh_hip_joint",
     "rh_upper_leg_joint",
-    "rh_lower_leg_joint"};
+    "rh_lower_leg_joint"};*/
+
+  /*joint_names_ = champ::URDF::getJointNames(nh); SPOT*/
+  joint_names_ = {
+    "front_left_hip_x",
+    "front_left_hip_y",
+    "front_left_knee",
+    "front_right_hip_x",
+    "front_right_hip_y",
+    "front_right_knee",
+    "rear_left_hip_x",
+    "rear_left_hip_y",
+    "rear_left_knee",
+    "rear_right_hip_x",
+    "rear_right_hip_y",
+    "rear_right_knee"};
 
   node_namespace_ = this->get_namespace();
 
