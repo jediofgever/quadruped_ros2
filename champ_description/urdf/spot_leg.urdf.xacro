@@ -6,12 +6,12 @@
     <xacro:arg name="leg_mu2" default="1.0" />
     <xacro:arg name="leg_fdir1" default="" />
 
-    <xacro:arg name="max_knee_effort" default="80" />
-    <xacro:arg name="max_knee_velocity" default="15" />
-    <xacro:arg name="max_hip_x_effort" default="80" />
-    <xacro:arg name="max_hip_x_velocity" default="15" />
-    <xacro:arg name="max_hip_y_effort" default="80" />
-    <xacro:arg name="max_hip_y_velocity" default="15" />
+    <xacro:arg name="max_knee_effort" default="160" />
+    <xacro:arg name="max_knee_velocity" default="30" />
+    <xacro:arg name="max_hip_x_effort" default="160" />
+    <xacro:arg name="max_hip_x_velocity" default="30" />
+    <xacro:arg name="max_hip_y_effort" default="160" />
+    <xacro:arg name="max_hip_y_velocity" default="30" />
 
     <xacro:macro name="spot_leg" params="leg_name prefix">
 
@@ -54,7 +54,7 @@
             <parent link="${prefix}base_link" />
             <child link="${prefix}${leg_name}_hip" />
             <limit effort="$(arg max_hip_x_effort)" velocity="$(arg max_hip_x_velocity)" lower="-0.78539816339744827899" upper="0.78539816339744827899" />
-            <dynamics damping="100.0" friction="1000.0" />
+            <dynamics damping="0.0" friction="0.0" />
         </joint>
         <link name="${prefix}${leg_name}_upper_leg">
             <visual>
@@ -79,7 +79,7 @@
             <parent link="${prefix}${leg_name}_hip" />
             <child link="${prefix}${leg_name}_upper_leg" />
             <limit effort="$(arg max_hip_y_effort)" velocity="$(arg max_hip_y_velocity)" lower="-0.89884456477707963539" upper="2.2951079663725435509" />
-            <dynamics damping="100.0" friction="1000.0" />
+            <dynamics damping="0.0" friction="0.0" />
         </joint>
         <link name="${prefix}${leg_name}_lower_leg">
             <visual>
@@ -125,7 +125,7 @@
             <parent link="${prefix}${leg_name}_upper_leg" />
             <child link="${prefix}${leg_name}_lower_leg" />
             <limit effort="$(arg max_knee_effort)" velocity="$(arg max_knee_velocity)" lower="-2.7929" upper="-0.254801" />
-            <dynamics damping="100.0" friction="1000.0" />
+            <dynamics damping="0.0" friction="0.0" />
         </joint>
         <xacro:empty_link name="${prefix}${leg_name}_ee" />
         <xacro:fixed_joint name="${leg_name}_foot" parent="${prefix}${leg_name}_lower_leg" child="${prefix}${leg_name}_ee" xyz="0 0 -${lower_leg_to_foot_z}" />
