@@ -1,0 +1,37 @@
+/**:
+  ros__parameters:
+    gait:
+      knee_orientation: ">>"
+      pantograph_leg: false
+      odom_scaler: 0.9
+      max_linear_velocity_x: 0.50
+      max_linear_velocity_y: 0.25
+      max_angular_velocity_z: 1.0
+      com_x_translation: 0.0
+      swing_height: 0.04
+      stance_depth: 0.00
+      stance_duration: 0.25
+      nominal_height: 0.2
+    loop_rate: 1000.0
+    use_sim_time: true
+    base: base_link
+    # LINKS for SPOT
+    #left_front_links: ["front_left_hip", "front_left_upper_leg", "front_left_lower_leg", "front_left_ee"]
+    #left_hind_links: ["rear_left_hip", "rear_left_upper_leg", "rear_left_lower_leg", "rear_left_ee"]
+    #right_front_links: ["front_right_hip", "front_right_upper_leg", "front_right_lower_leg", "front_right_ee"]
+    #right_hind_links: ["rear_right_hip", "rear_right_upper_leg", "rear_right_lower_leg", "rear_right_ee"]
+    # JOINTS for SPOT
+    #left_front_joints: ["front_left_hip_x", "front_left_hip_y", "front_left_knee"]
+    #left_hind_joints: ["rear_left_hip_x", "rear_left_hip_y", "rear_left_knee"]
+    # right_front_joints: ["front_right_hip_x", "front_right_hip_y", "front_right_knee"]
+    #right_hind_joints: ["rear_right_hip_x", "rear_right_hip_y", "rear_right_knee"]
+    # LINKS for little CHAMP
+    left_front_links: ["lf_hip_link", "lf_upper_leg_link", "lf_lower_leg_link", "lf_foot_link"]
+    left_hind_links: ["lh_hip_link", "lh_upper_leg_link", "lh_lower_leg_link", "lh_foot_link"]
+    right_front_links: ["rf_hip_link", "rf_upper_leg_link", "rf_lower_leg_link", "rf_foot_link"]
+    right_hind_links: ["rh_hip_link", "rh_upper_leg_link", "rh_lower_leg_link", "rh_foot_link"]
+    # Joints for little CHAMP
+    left_front_joints: ["lf_hip_joint", "lf_upper_leg_joint", "lf_lower_leg_joint"]
+    left_hind_joints: ["lh_hip_joint", "lh_upper_leg_joint", "lh_lower_leg_joint"]
+    right_front_joints: ["rf_hip_joint", "rf_upper_leg_joint", "rf_lower_leg_joint"]
+    right_hind_joints: ["rh_hip_joint", "rh_upper_leg_joint", "rh_lower_leg_joint"]

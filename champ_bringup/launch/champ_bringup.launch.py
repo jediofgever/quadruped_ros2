@@ -19,21 +19,20 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import ExecuteProcess
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
-from launch.substitutions import Command, PathJoinSubstitution, FindExecutable
+from launch.substitutions import Command
 from launch.substitutions import PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
 
 import os
 
-# This will only take in effect if you are running THorvald in Simulation
+# This will only take in effect if you are running in Simulation
 os.environ['GAZEBO_MODEL_PATH'] = os.path.join(get_package_share_directory('champ_gazebo'),
                                                'models')
 
 
 def generate_launch_description():
 
-    # Get hare directories of thorvald packages
+    # Get hare directories of packages
     champ_bringup_share_dir = get_package_share_directory(
         'champ_bringup')
     champ_description_share_dir = get_package_share_directory(
@@ -44,8 +43,7 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration("use_rviz")
     tf_prefix = LaunchConfiguration('tf_prefix')
     rviz_config = LaunchConfiguration("rviz_config")
-    joy_config_filepath = LaunchConfiguration('config_filepath')
-    link_params = LaunchConfiguration('link_params')
+    champ_params = LaunchConfiguration('champ_params')
 
     declare_use_simulator = DeclareLaunchArgument(
         'use_simulator',
@@ -66,17 +64,12 @@ def generate_launch_description():
     declare_rviz_config = DeclareLaunchArgument(
         'rviz_config',
         default_value=os.path.join(
-            champ_bringup_share_dir, 'rviz', 'thorvald_default_view.rviz'),
+            champ_bringup_share_dir, 'rviz', 'default_view.rviz'),
         description='...')
-    declare_joy_config_filepath = DeclareLaunchArgument(
-        'config_filepath',
+    declare_champ_params = DeclareLaunchArgument(
+        'champ_params',
         default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'joystick_xbox.yaml'),
-        description='path to locks params.')
-    declare_link_params = DeclareLaunchArgument(
-        'link_params',
-        default_value=os.path.join(
-            champ_bringup_share_dir, 'config', 'links.yaml'),
+            champ_bringup_share_dir, 'config', 'champ_params.yaml'),
         description='path to locks params.')
 
     # DECLARE THE msg relay ROS2 NODE
@@ -89,7 +82,7 @@ def generate_launch_description():
         arguments=['--ros-args', '--log-level', 'INFO'],
         # prefix=['xterm -e gdb -ex run --args'],
         parameters=[{"use_sim_time": use_sim_time},
-                    link_params],
+                    champ_params],
         remappings=[('cmd_vel', 'vox_nav/cmd_vel')])
 
     # DECLARE THE msg relay ROS2 NODE
@@ -100,18 +93,19 @@ def generate_launch_description():
         output='screen',
         namespace='',
         parameters=[{"use_sim_time": use_sim_time},
-                    link_params],
+                    champ_params],
         remappings=[('cmd_vel', 'vox_nav/cmd_vel')],
-        prefix=['xterm -e gdb -ex run --args'],
+        #prefix=['xterm -e gdb -ex run --args'],
     )
 
-    # DECLARE THE ROBOT STATE PUBLISHER NODE
-
-    #xacro_file_name = 'champ.urdf.xacro'
-    xacro_file_name = 'spot.urdf.xacro'
+    xacro_file_name = 'champ/champ.urdf.xacro'
+    #xacro_file_name = '/spot/spot.urdf.xacro'
 
     xacro_full_dir = os.path.join(
         champ_description_share_dir, 'urdf', xacro_file_name)
+
+    print(xacro_full_dir)
+
     declare_robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -195,14 +189,13 @@ def generate_launch_description():
         declare_use_rviz,
         declare_tf_prefix,
         declare_rviz_config,
-        declare_link_params,
+        declare_champ_params,
         declare_quadruped_controller_node,
         declare_state_estimation_node,
         declare_robot_state_publisher_node,
         declare_rviz_launch_include,
         declare_spawn_entity_to_gazebo_node,
         declare_start_gazebo_cmd,
-        declare_joy_config_filepath,
         decleare_localization_params,
         base_to_footprint_ekf,
         footprint_to_odom_ekf,

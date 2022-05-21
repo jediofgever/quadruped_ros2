@@ -49,7 +49,7 @@ footprint_to_odom_ekf:
     odom0_differential: false
     odom0_queue_size: 10
     imu0_config: [false,  false, false, # X , Y , Z
-                  false,  false, false,  # roll , pitch ,yaw
+                  false,  false, false, # roll , pitch ,yaw
                   false,  false, false, # dX , dY , dZ
                   false,  false, false, # droll , dpitch ,dyaw
                   false,  false, false] # ddX , ddY , ddZ

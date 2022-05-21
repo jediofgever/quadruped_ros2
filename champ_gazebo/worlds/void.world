@@ -26,21 +26,10 @@
         <include>
             <uri>model://ground_plane</uri>
         </include>
+
         <include>
             <uri>model://sun</uri>
         </include>
 
-        <!-- 
-        <include>
-            <pose>4.0 0 0.6 0.0 0.0 0.0</pose>
-            <uri>model://spot</uri>
-        </include>
-        <plugin name="sensor_base_attacher_plugin" filename="libsensor_base_attacher_plugin.so">
-            <robot_model_name>champ</robot_model_name>
-            <robot_base_link_name>base_link</robot_base_link_name>
-            <sensor_suite_model_name>full_sensor_suite</sensor_suite_model_name>
-            <sensor_suite_base_link_name>base_sensor_link</sensor_suite_base_link_name>
-        </plugin>
-        -->
     </world>
 </sdf>

@@ -28,7 +28,7 @@ include_directories(
   ${champ_INCLUDE_DIRS}/champ/champ/ 
 )
 
-install(DIRECTORY config  
+install(DIRECTORY  
   DESTINATION share/${PROJECT_NAME}
 )
 

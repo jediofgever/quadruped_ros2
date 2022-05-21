@@ -138,12 +138,12 @@ QuadrupedController::QuadrupedController()
   RCLCPP_INFO(get_logger(), "Parsed URDF, has got %s name", model.getName().c_str());
 
 
-  //champ::URDF::loadFromServer(base_, nh);
+  // read links names from yaml
   std::vector<std::string> links_map;
-  links_map.push_back("left_front");
-  links_map.push_back("right_front");
-  links_map.push_back("left_hind");
-  links_map.push_back("right_hind");
+  links_map.push_back("left_front_links");
+  links_map.push_back("left_hind_links");
+  links_map.push_back("right_front_links");
+  links_map.push_back("right_hind_links");
 
   for (int i = 0; i < 4; i++) {
     //fillLeg(base_.legs[i], nh, model, links_map[i]);
@@ -152,62 +152,45 @@ QuadrupedController::QuadrupedController()
     this->get_parameter(links_map[i], curr_links_param);
     std::vector<std::string> curr_links = curr_links_param.as_string_array();
 
-    for (int j = 3; j > -1; j--) {
-      try {
-        std::string ref_link;
-        std::string end_link;
-        if (j > 0) {
-          ref_link = curr_links[j - 1];
-        } else {
-          ref_link = model.getRoot()->name;
-        }
-        end_link = curr_links[j];
-
-        urdf::Pose pose;
-        getPose(&pose, ref_link, end_link, model);
-        double x, y, z;
-        x = pose.position.x;
-        y = pose.position.y;
-        z = pose.position.z;
-        base_.legs[i]->joint_chain[j]->setTranslation(x, y, z);
-      } catch (const std::exception & e) {
-        RCLCPP_ERROR(get_logger(), "Exception occured");
-      }
-    }
-
     RCLCPP_INFO(get_logger(), "Got links %d for %s", curr_links.size(), links_map[i].c_str());
 
+    for (int j = 3; j > -1; j--) {
+      std::string ref_link;
+      std::string end_link;
+      if (j > 0) {
+        ref_link = curr_links[j - 1];
+      } else {
+        ref_link = model.getRoot()->name;
+      }
+      end_link = curr_links[j];
+
+      urdf::Pose pose;
+      getPose(&pose, ref_link, end_link, model);
+      double x, y, z;
+      x = pose.position.x;
+      y = pose.position.y;
+      z = pose.position.z;
+      base_.legs[i]->joint_chain[j]->setTranslation(x, y, z);
+    }
   }
 
-  /*joint_names_ = champ::URDF::getJointNames(nh); CHAMP*/
-  /*joint_names_ = {
-    "lf_hip_joint",
-    "lf_upper_leg_joint",
-    "lf_lower_leg_joint",
-    "lh_hip_joint",
-    "lh_upper_leg_joint",
-    "lh_lower_leg_joint",
-    "rf_hip_joint",
-    "rf_upper_leg_joint",
-    "rf_lower_leg_joint",
-    "rh_hip_joint",
-    "rh_upper_leg_joint",
-    "rh_lower_leg_joint"};*/
+  // read joint names from yaml
+  std::vector<std::string> joints_map;
+  joints_map.push_back("left_front_joints");
+  joints_map.push_back("left_hind_joints");
+  joints_map.push_back("right_front_joints");
+  joints_map.push_back("right_hind_joints");
+  for (int i = 0; i < 4; i++) {
+    this->declare_parameter(joints_map[i]);
+    rclcpp::Parameter curr_joints_param(joints_map[i], std::vector<std::string>({}));
+    this->get_parameter(joints_map[i], curr_joints_param);
 
-  /*joint_names_ = champ::URDF::getJointNames(nh); SPOT*/
-  joint_names_ = {
-    "front_left_hip_x",
-    "front_left_hip_y",
-    "front_left_knee",
-    "front_right_hip_x",
-    "front_right_hip_y",
-    "front_right_knee",
-    "rear_left_hip_x",
-    "rear_left_hip_y",
-    "rear_left_knee",
-    "rear_right_hip_x",
-    "rear_right_hip_y",
-    "rear_right_knee"};
+    RCLCPP_INFO(get_logger(), "joints for %s are listed below", joints_map[i].c_str());
+    for (auto && curr_joint : curr_joints_param.as_string_array()) {
+      joint_names_.push_back(curr_joint);
+      RCLCPP_INFO(get_logger(), "%s", curr_joint.c_str());
+    }
+  }
 
   timer_ = this->create_wall_timer(
     std::chrono::milliseconds(static_cast<int>(1000 / loop_rate)),

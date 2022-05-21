@@ -29,16 +29,18 @@ def generate_launch_description():
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config',
         default_value=os.path.join(bringup_dir, 'rviz',
-                                   'thorvald_default_view.rviz'),
+                                   'default_view.rviz'),
         description='Full path to the RVIZ config file to use')
 
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        output={'both': 'log'}, #change it to screen if you wanna see RVIZ output in terminal
-        arguments=['-d', rviz_config_file,'--ros-args', '--log-level', 'ERROR']
-        )
+        # change it to screen if you wanna see RVIZ output in terminal
+        output={'both': 'log'},
+        arguments=['-d', rviz_config_file,
+                   '--ros-args', '--log-level', 'ERROR']
+    )
 
     return LaunchDescription([
         declare_rviz_config_file_cmd,
